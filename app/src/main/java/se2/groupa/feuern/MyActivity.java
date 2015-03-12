@@ -1,9 +1,13 @@
 package se2.groupa.feuern;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.InputDevice;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 
 public class MyActivity extends Activity {
@@ -32,5 +36,14 @@ public class MyActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void openNewGame(View view){
+     //    Intent intent = new Intent(this, nextActivity.class);
+     //   startActivity(intent);
+
+        System.out.println("New Game");
+        Log.d("MyActivity","debug msg");
+        Log.v("MyActivity","View msg");
     }
 }

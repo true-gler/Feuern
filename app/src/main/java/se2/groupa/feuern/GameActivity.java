@@ -1,28 +1,35 @@
 package se2.groupa.feuern;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.InputDevice;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
+/**
+ * Displays your own hand when its your turn and let you choose to change one card or to
+ * take the whole three cards of the mid
+ * (Evtl könnten wir einbauen ob die App im Background ist -> dann notification)
+ *
+ * reacts   on callbacks for "handy hinunterlegen" -> obegehn
+ *          on callbacks for "handy schütteln" -> weiter
+ *
+ * Also provides to look in the cards of another user :)
+ *
+ */
 
-public class MyActivity extends Activity {
+public class GameActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my);
+        setContentView(R.layout.activity_game);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.my, menu);
+        getMenuInflater().inflate(R.menu.menu_game, menu);
         return true;
     }
 
@@ -32,18 +39,12 @@ public class MyActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
+
         return super.onOptionsItemSelected(item);
-    }
-
-    public void openNewGame(View view){
-     //    Intent intent = new Intent(this, nextActivity.class);
-     //   startActivity(intent);
-
-        System.out.println("New Game");
-        Log.d("MyActivity","debug msg");
-        Log.v("MyActivity","View msg");
     }
 }

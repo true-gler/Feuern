@@ -22,6 +22,7 @@ public class ServerThread implements Runnable {
     public void run() {
 
         Socket socket = null;
+        int availableConnections = 9;
 
         try {
             serverSocket = new ServerSocket(SERVERPORT);
@@ -29,7 +30,7 @@ public class ServerThread implements Runnable {
             e.printStackTrace();
         }
 
-        while (!Thread.currentThread().isInterrupted()) {
+        while (availableConnections > 0) {
 
             try {
 
@@ -46,6 +47,7 @@ public class ServerThread implements Runnable {
                  */
 
                 socket = serverSocket.accept();
+                availableConnections--;
                 PlayerThread client = new PlayerThread(socket, servername);
 
                 new Thread(client).start();

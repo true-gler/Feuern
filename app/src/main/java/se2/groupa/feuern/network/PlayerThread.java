@@ -37,31 +37,55 @@ public class PlayerThread implements Runnable {
 
     public void run() {
 
-        isRunning = true;
 
-        while (isRunning) {
+        try {
+            isRunning = true;
+            //output.write("--------------------------------------\n");
+            //output.write("Welcome to FEUERN\n");
+            //output.write("Server: " + servername + "\n");
+            //output.write("IP-Address: " + clientSocket.getInetAddress().getHostAddress() + "\n");
+            //output.write("--------------------------------------\n");
+            output.write("[OK] connection established");
+            output.flush();
 
-            try {
+            while (isRunning) {
 
                 String read = input.readLine();
 
-                if (read.equals("getServername"))
+                if (read.equals("server"))
                 {
                     output.write("[OK] " + servername);
-                    output.flush();
                 }
-                else if (read.equals("bye"))
+                else if (read.equals("bye") || read.equals("quit"))
                 {
                     isRunning = false;
-
                     output.write("[OK] Bye");
-                    output.flush();
                 }
-                //updateConversationHandler.post(new UpdateUIThread(read));
+                else if (read.equals("help") || read.equals("?"))
+                {
+                    output.write("[OK] available commands: server, bye, help");
+                }
+                else
+                {
+                    output.write("[ERR] invalid command");
+                }
 
-            } catch (IOException e) {
-                e.printStackTrace();
+                output.newLine();
+                output.flush();
             }
+
+            // close connections
+            input.close();
+            output.close();
+            clientSocket.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            input = null;
+            output = null;
+            clientSocket = null;
         }
     }
 }

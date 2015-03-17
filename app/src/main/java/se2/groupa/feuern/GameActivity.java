@@ -24,7 +24,8 @@ public class GameActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
     }
-    //ah ah ah
+    //ah ah ah 13zoller 15zoller is the best
+    //das ist ein test
 
 
     @Override

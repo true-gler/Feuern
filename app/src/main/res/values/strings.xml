@@ -7,6 +7,7 @@
     <string name="NewGame">Neues Spiel</string>
     <string name="Exit">Exit</string>
     <string name="title_activity_game">GameActivity</string>
-    <string name="title_activity_lobby">LobbyActivity</string>
+    <string name="title_activity_lobby">LobbyActivity</string>  //Dies ist der Name dieser Aktivität
+
 
 </resources>

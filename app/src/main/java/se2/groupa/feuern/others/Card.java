@@ -8,6 +8,10 @@ public class Card {
     private int color;
     private int number;
     private int value;
+    //Hier wird noch ein zusätzliches Attribut eingeführt, um auf die .png-Dateien im drawable Ordner zu zeigen
+    private int drawable;
+
+
     //TODO private Image image;
 
     public static final int HERZ = 1;
@@ -24,10 +28,11 @@ public class Card {
     public static final int KOENIG = 11;
     public static final int ASS = 12;
 
-    public Card(int color, int number, int value) {
+    public Card(int color, int number, int value, int drawable) {
         this.color = color;
         this.number = number;
         this.value = value;
+        this.drawable = drawable;
         //TODO this.image = new Image(<path>);
     }
 
@@ -42,6 +47,8 @@ public class Card {
     public int getValue() {
         return value;
     }
+
+    public int getDrawable() { return this.drawable; }
 
     //TODO getter Image
 

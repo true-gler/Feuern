@@ -26,7 +26,7 @@ public class GameActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game); //Kommentar
+        setContentView(R.layout.activity_game); 
 
 
         //Hier würden jetzt zu Testzwecken für einen Spieler drei Karten ausgeteilt

@@ -57,7 +57,7 @@ public class CardDeck {
         Card[] cards = new Card[3];
         int randNumb;
         for (int i = 0; i < cards.length; i++) {
-            randNumb = (int) Math.round(Math.random()*(stackCards.size()+1));
+            randNumb = (int) Math.round(Math.random()*(stackCards.size()));
             if(stackCards.isEmpty()){return null;}
             cards[i] = stackCards.get(randNumb);
             stackCards.remove(cards[i]);

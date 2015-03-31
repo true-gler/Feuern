@@ -2,6 +2,7 @@ package se2.groupa.feuern;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageButton;
@@ -26,7 +27,7 @@ public class GameActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game); 
+        setContentView(R.layout.activity_game);
 
 
         //Hier würden jetzt zu Testzwecken für einen Spieler drei Karten ausgeteilt
@@ -38,6 +39,8 @@ public class GameActivity extends Activity {
         Card ownCardsRight = cards_own[0];
         Card ownCardsMiddle = cards_own[1];
         Card ownCardsLeft = cards_own[2];
+
+        Log.i("Karte Rechts: ", ownCardsRight.getNumber() + " " + ownCardsRight.getColor());
 
         ImageButton btn_ownCardsRight  = (ImageButton) findViewById(R.id.ownCardsRight);
         ImageButton btn_ownCardsMiddle  = (ImageButton) findViewById(R.id.ownCardsMiddle);
@@ -55,7 +58,7 @@ public class GameActivity extends Activity {
 
         ImageButton btn_publicCardsRight  = (ImageButton) findViewById(R.id.publicCardsRight);
         ImageButton btn_publicCardsMiddle  = (ImageButton) findViewById(R.id.publicCardsMiddle);
-        ImageButton btn_publicCardsLeft  = (ImageButton) findViewById(R.id.publicCardsMiddle);
+        ImageButton btn_publicCardsLeft  = (ImageButton) findViewById(R.id.publicCardsLeft);
 
         btn_publicCardsRight.setImageResource(publicCardsRight.getDrawable());
         btn_publicCardsMiddle.setImageResource(publicCardsMiddle.getDrawable());

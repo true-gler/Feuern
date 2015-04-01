@@ -19,6 +19,8 @@ public class Player implements Observer {
         this.livePoints = 4;
     }
 
+
+
     public int getId() {
         return id;
     }

@@ -29,10 +29,30 @@ public class MainActivity extends Activity {
 
     private Thread serverThread = null;
 
+    //Nur zu Testzwecken
+    private void startGameActivity(){
+        Intent startTwo= new Intent(this, GameActivity.class);
+        startActivity(startTwo);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
+
+
+        //Nur zu Testzwecken, um zu schauen, was passiert,
+        // wenn man die GameActivity von der MainActivity aus startet
+        Button btn_newGame = (Button) findViewById(R.id.bNewGame);
+
+        btn_newGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent();
+                startGameActivity();
+
+            }
+        });
 
         switchStartStopServer = (Switch) findViewById(R.id.switchStartStopServer);
         switchStartStopServer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

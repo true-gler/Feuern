@@ -65,6 +65,8 @@ public class MainActivity extends Activity {
                     serverThread = new Thread(new ServerThread(textViewServername.getText().toString()));
                     serverThread.start();
 
+                    openNewGame(buttonView);
+
                 } else {
                     textViewServername.setEnabled(true);
 
@@ -111,6 +113,10 @@ public class MainActivity extends Activity {
     public void openNewGame(View view){
      //    Intent intent = new Intent(this, nextActivity.class);
      //   startActivity(intent);
+
+
+        Intent i = new Intent(this, LobbyActivity.class);
+        startActivity(i);
 
         System.out.println("New Game");
         Log.d("MainActivity","debug msg");

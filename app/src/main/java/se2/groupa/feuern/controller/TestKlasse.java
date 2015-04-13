@@ -5,4 +5,5 @@ package se2.groupa.feuern.controller;
  */
 public class TestKlasse {
     int a = 6;
+    //das ist ein TEst
 }

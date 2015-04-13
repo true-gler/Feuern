@@ -12,8 +12,8 @@ public class Player implements Observer {
     private Card[] cards;
     private int livePoints;
 
-    public Player(int id, String name) {
-        this.id = id;
+    public Player(String name) {
+       // this.id = id;
         this.name = name;
         this.cards = new Card[3];
         this.livePoints = 4;

@@ -13,8 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
-import se2.groupa.feuern.controller.GameController;
-import se2.groupa.feuern.controller.GameState;
+//import se2.groupa.feuern.controller.GameController;
+//import se2.groupa.feuern.controller.GameState;
 import se2.groupa.feuern.others.Card;
 import se2.groupa.feuern.others.CardDeck;
 import se2.groupa.feuern.others.Player;
@@ -41,7 +41,7 @@ public class GameActivity extends Activity {
     protected ImageButton btn_ownCardsMiddle;
     protected ImageButton btn_ownCardsLeft;
     protected Button btn_next;
-    protected GameController gameController;
+    //protected GameController gameController;
     protected Card ownCardSwitch;
     protected Card publicCardSwitch;
     protected boolean moveDone;
@@ -77,7 +77,7 @@ public class GameActivity extends Activity {
         ImageButton btn_ownCardsMiddle = (ImageButton) findViewById(R.id.ownCardsMiddle);
         ImageButton btn_ownCardsLeft = (ImageButton) findViewById(R.id.ownCardsLeft);
         Button btn_next = (Button) findViewById(R.id.buttonNext);
-
+/*
         img_nowTurnPlayer.setText(gameController.getGameState().getNowTurnPlayer().getName());
         img_nextTurnPlayer.setText(gameController.getGameState().getNextTurnPlayer().getName());
 
@@ -88,6 +88,7 @@ public class GameActivity extends Activity {
         btn_publicCardsRight.setImageResource(gameController.getGameState().getPublicCards()[0].getDrawable());
         btn_publicCardsMiddle.setImageResource(gameController.getGameState().getPublicCards()[1].getDrawable());
         btn_publicCardsLeft.setImageResource(gameController.getGameState().getPublicCards()[2].getDrawable());
+        */
     }
 
 
@@ -95,18 +96,18 @@ public class GameActivity extends Activity {
         if(!moveDone) {
             Card card = null;
             if (v.getId() == R.id.ownCardsRight) {
-                card = gameController.getGameState().getNowTurnPlayer().getCards()[0];
+                //card = gameController.getGameState().getNowTurnPlayer().getCards()[0];
             }
             if (v.getId() == R.id.ownCardsMiddle) {
-                card = gameController.getGameState().getNowTurnPlayer().getCards()[1];
+                //card = gameController.getGameState().getNowTurnPlayer().getCards()[1];
             }
             if (v.getId() == R.id.ownCardsLeft) {
-                card = gameController.getGameState().getNowTurnPlayer().getCards()[2];
+                //card = gameController.getGameState().getNowTurnPlayer().getCards()[2];
             }
             setOwnCardSwitch(card);
 
             if (getOwnCardSwitch() != null && getPublicCardSwitch() != null) {
-                gameController.swapCards(getOwnCardSwitch(), getPublicCardSwitch());
+                //gameController.swapCards(getOwnCardSwitch(), getPublicCardSwitch());
                 updateButtons();
                 setOwnCardSwitch(null);
                 setPublicCardSwitch(null);
@@ -120,18 +121,18 @@ public class GameActivity extends Activity {
         if(!moveDone) {
             Card card = null;
             if (v.getId() == R.id.publicCardsRight) {
-                card = gameController.getGameState().getPublicCards()[0];
+                //card = gameController.getGameState().getPublicCards()[0];
             }
             if (v.getId() == R.id.publicCardsMiddle) {
-                card = gameController.getGameState().getPublicCards()[1];
+                //card = gameController.getGameState().getPublicCards()[1];
             }
             if (v.getId() == R.id.publicCardsLeft) {
-                card = gameController.getGameState().getPublicCards()[2];
+                //card = gameController.getGameState().getPublicCards()[2];
             }
             setPublicCardSwitch(card);
 
             if (getOwnCardSwitch() != null && getPublicCardSwitch() != null) {
-                gameController.swapCards(getOwnCardSwitch(), getPublicCardSwitch());
+                //gameController.swapCards(getOwnCardSwitch(), getPublicCardSwitch());
                 updateButtons();
                 setOwnCardSwitch(null);
                 setPublicCardSwitch(null);
@@ -151,7 +152,7 @@ public class GameActivity extends Activity {
         ImageButton btn_ownCardsMiddle = (ImageButton) findViewById(R.id.ownCardsMiddle);
         ImageButton btn_ownCardsLeft = (ImageButton) findViewById(R.id.ownCardsLeft);
         Button btn_next = (Button) findViewById(R.id.buttonNext);
-
+/*
         if(stop==true && gameController.getGameState().getPlayers().
                 indexOf(gameController.getGameState().getNextTurnPlayer()) == stopPosition){
 
@@ -171,6 +172,7 @@ public class GameActivity extends Activity {
             moveDone = false;
             updateButtons();
         }
+        */
     }
 
 
@@ -180,6 +182,7 @@ public class GameActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        /*
         TextView img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
         TextView img_nextTurnPlayer = (TextView) findViewById(R.id.TextViewNextTurnPlayer);
         ImageButton btn_publicCardsRight = (ImageButton) findViewById(R.id.publicCardsRight);
@@ -226,6 +229,7 @@ public class GameActivity extends Activity {
                 return true;
             }
         });
+        */
 
     }
 

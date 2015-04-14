@@ -1,4 +1,4 @@
-package se2.groupa.feuern.others;
+package se2.groupa.feuern.model;
 
 /**
  * Created by Taurer on 30.03.2015.

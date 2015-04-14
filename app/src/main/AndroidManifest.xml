@@ -25,14 +25,14 @@
         <activity
             android:name=".GameActivity"
             android:label="@string/title_activity_game"
-            android:parentActivityName=".LobbyActivity" >
+            android:parentActivityName=".ClientActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="se2.groupa.feuern.LobbyActivity" />
+                android:value=".ClientActivity" />
         </activity>
         <activity
-            android:name=".LobbyActivity"
-            android:label="@string/title_activity_lobby"
+            android:name=".ClientActivity"
+            android:label="ClientActivity"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

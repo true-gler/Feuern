@@ -1,7 +1,5 @@
 package se2.groupa.feuern.network;
 
-import android.widget.Toast;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -9,9 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
-import se2.groupa.feuern.ServerActivity;
 import se2.groupa.feuern.controller.ServerController;
-import se2.groupa.feuern.others.Player;
 
 /**
  * Created by Lukas on 16.03.15.

@@ -1,4 +1,4 @@
-package se2.groupa.feuern.others;
+package se2.groupa.feuern.model;
 
 import java.util.Observable;
 import java.util.Observer;

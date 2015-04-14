@@ -1,13 +1,9 @@
 package se2.groupa.feuern.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Observable;
-import java.util.Observer;
 
-import se2.groupa.feuern.network.ListenerThread;
-import se2.groupa.feuern.others.CardDeck;
-import se2.groupa.feuern.others.Player;
+import se2.groupa.feuern.model.CardDeck;
+import se2.groupa.feuern.model.Player;
 
 /**
  * Created by Taurer on 30.03.2015.

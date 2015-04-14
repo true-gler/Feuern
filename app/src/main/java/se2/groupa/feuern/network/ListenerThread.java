@@ -29,7 +29,6 @@ public class ListenerThread implements Runnable {
     public void run() {
 
         Socket socket = null;
-        int availableConnections = 9;
 
         try {
             serverSocket = new ServerSocket(SERVERPORT);
@@ -37,7 +36,7 @@ public class ListenerThread implements Runnable {
             e.printStackTrace();
         }
 
-        while (availableConnections > 0) {
+        while (true) {
 
             try {
 
@@ -54,7 +53,6 @@ public class ListenerThread implements Runnable {
                  */
 
                 socket = serverSocket.accept();
-                availableConnections--;
 
                 ServerThread threadForClient = new ServerThread(socket, servername, serverController);
                 serverThreads.add(threadForClient);

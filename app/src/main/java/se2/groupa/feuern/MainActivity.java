@@ -3,18 +3,9 @@ package se2.groupa.feuern;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.Switch;
-
-import se2.groupa.feuern.network.ListenerThread;
 
 
 /**
@@ -24,7 +15,7 @@ public class MainActivity extends Activity {
 
 
     public void startClientActivity(View view){
-        Intent client= new Intent(this, LobbyActivity.class);
+        Intent client= new Intent(this, ClientActivity.class);
         startActivity(client);
     }
 

@@ -1,12 +1,10 @@
 package se2.groupa.feuern.controller;
 
-import android.widget.ImageButton;
-
 import java.util.ArrayList;
 
-import se2.groupa.feuern.R;
-import se2.groupa.feuern.others.Card;
-import se2.groupa.feuern.others.Player;
+import se2.groupa.feuern.model.Card;
+import se2.groupa.feuern.model.GameState;
+import se2.groupa.feuern.model.Player;
 
 /**
  * Created by Markus on 27.03.2015.

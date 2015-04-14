@@ -34,8 +34,19 @@ public class GameController {
 
         }
 
-        this.gamestate.setPublicCards(this.gamestate.getCardDeck().getThreeCardsFromStack());
+        //this.gamestate.setPublicCards(this.gamestate.getCardDeck().getThreeCardsFromStack());
 
+        return this.gamestate;
+    }
+
+    public GameState KeepCardsFinishDealing(){
+        this.gamestate.setPublicCards(this.gamestate.getCardDeck().getThreeCardsFromStack());
+        return this.gamestate;
+    }
+
+    public GameState DontKeepCardsFinishDealing(){
+        this.gamestate.setPublicCards(this.gamestate.getNowTurnPlayer().getCards());
+        this.gamestate.getNowTurnPlayer().setCards(this.gamestate.getCardDeck().getThreeCardsFromStack());
         return this.gamestate;
     }
 

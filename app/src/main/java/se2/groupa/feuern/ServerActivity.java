@@ -1,6 +1,7 @@
 package se2.groupa.feuern;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Editable;
@@ -8,6 +9,7 @@ import android.text.TextWatcher;
 import android.text.format.Formatter;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
@@ -107,5 +109,10 @@ public class ServerActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void startGame(View view){
+        Intent intent= new Intent(this, GameActivity.class);
+        startActivity(intent);
     }
 }

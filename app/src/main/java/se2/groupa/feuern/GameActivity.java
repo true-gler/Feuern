@@ -54,7 +54,6 @@ public class GameActivity extends Activity {
     protected boolean stop;
     protected int stopPosition;
     protected double cardPoints;
-    protected int irgendwas;
 
 
 

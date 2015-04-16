@@ -1,5 +1,8 @@
 package se2.groupa.feuern.network;
 
+import android.os.Handler;
+import android.os.Message;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -7,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
+import se2.groupa.feuern.ServerControllerOperation;
 import se2.groupa.feuern.controller.ServerController;
 
 /**
@@ -17,17 +21,20 @@ public class ServerThread implements Runnable {
     private String servername;
     private Socket clientSocket;
     private ServerController serverController;
+    private Handler uiHandler;
+    private String currentPlayerName;
 
     private BufferedReader input;
     private BufferedWriter output;
 
     private boolean isRunning;
 
-    public ServerThread(Socket clientSocket, String servername, ServerController serverController) {
+    public ServerThread(Socket clientSocket, String servername, ServerController serverController, Handler uiHandler) {
 
         this.servername = servername;
         this.clientSocket = clientSocket;
         this.serverController = serverController;
+        this.uiHandler = uiHandler;
 
         try {
 
@@ -67,6 +74,13 @@ public class ServerThread implements Runnable {
 
                     if (serverController.addPlayer(playerName)) {
                         output.write("[OK] player successfully registered");
+
+                        Message msg = uiHandler.obtainMessage();
+                        msg.what = ServerControllerOperation.AddPlayer.getValue();
+                        msg.obj = serverController.getPlayer(playerName);
+                        uiHandler.sendMessage(msg);
+
+                        currentPlayerName = playerName;
                     }
                     else
                     {
@@ -75,11 +89,20 @@ public class ServerThread implements Runnable {
                 }
                 else if (read.startsWith("unregister"))
                 {
-                    String[] str = read.split(" ");
-                    String playerName = str[1];
+                    String playerName = currentPlayerName;
+
+                    if (playerName == null || playerName.isEmpty()) {
+                        String[] str = read.split(" ");
+                        playerName = str[1];
+                    }
 
                     if (serverController.deletePlayer(playerName)) {
                         output.write("[OK] successfully unregistered");
+
+                        Message msg = uiHandler.obtainMessage();
+                        msg.what = ServerControllerOperation.RemovePlayer.getValue();
+                        msg.obj = playerName;
+                        uiHandler.sendMessage(msg);
                     }
                     else
                     {
@@ -100,6 +123,7 @@ public class ServerThread implements Runnable {
                     output.write("[ERR] invalid command");
                 }
 
+                output.write("\n");
                 output.newLine();
                 output.flush();
             }

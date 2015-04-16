@@ -2,24 +2,31 @@ package se2.groupa.feuern;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.format.Formatter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.net.InetAddress;
-import java.util.concurrent.ExecutionException;
+import java.net.NetworkInterface;
+import java.net.ServerSocket;
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.Enumeration;
 
+import se2.groupa.feuern.adapters.PlayerAdapter;
 import se2.groupa.feuern.controller.ServerController;
-import se2.groupa.feuern.network.IPAddressTask;
+import se2.groupa.feuern.model.Player;
 import se2.groupa.feuern.network.ListenerThread;
 
 
@@ -29,26 +36,47 @@ public class ServerActivity extends Activity {
     private Switch switchStartStopServer;
     private TextView tvServerIpAddress;
     private ServerController serverController;
+    private ListView listViewPlayers;
+    private ArrayList<Player> currentPlayers;
+    private PlayerAdapter listViewPlayerAdapter;
+    ServerSocket serverSocket;
 
 
     private Thread serverThread = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_server);
 
-        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
-        String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
         tvServerIpAddress = (TextView) findViewById(R.id.tvServerIpAddress);
+        listViewPlayers = (ListView) findViewById(R.id.listViewPlayers);
 
-        try {
-            tvServerIpAddress.setText("Your IP: " + new IPAddressTask().execute().get());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+        tvServerIpAddress.setText("Share your IP: " + getIpAddress());
 
+        currentPlayers = new ArrayList<Player>();
+        listViewPlayerAdapter = new PlayerAdapter(this, currentPlayers);
+        listViewPlayers.setAdapter(listViewPlayerAdapter);
+
+        // addPlayer(new Player("Lukas"));
+        // addPlayer(new Player("Thomas"));
+
+        final Handler handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                if (msg.what == ServerControllerOperation.AddPlayer.getValue()) {
+                    if ((Player) msg.obj != null) {
+                        addPlayer((Player) msg.obj);
+                    }
+                }
+                if (msg.what == ServerControllerOperation.RemovePlayer.getValue()) {
+                    if ((String) msg.obj != null) {
+                        removePlayer((String) msg.obj);
+                    }
+                }
+                super.handleMessage(msg);
+            }
+        };
 
         switchStartStopServer = (Switch) findViewById(R.id.switchStartStopServer);
         switchStartStopServer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -60,22 +88,29 @@ public class ServerActivity extends Activity {
                     serverController = new ServerController(textViewServername.getText().toString());
 
                     // start server
-                    serverThread = new Thread(new ListenerThread(textViewServername.getText().toString(), serverController));
+                    serverThread = new Thread(new ListenerThread(textViewServername.getText().toString(), serverController, handler));
                     serverThread.start();
 
                     // TODO: update ui
+                    // TODO: start client thread automatically?
 
                 } else {
                     textViewServername.setEnabled(true);
 
-                    if (serverThread != null)
-                        serverThread.interrupt();
+                    if (serverSocket != null) {
+                        try {
+                            serverSocket.close();
+                        } catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
         });
 
-        textViewServername = (EditText)findViewById(R.id.textServername);
-        textViewServername.addTextChangedListener(new TextWatcher(){
+        textViewServername = (EditText) findViewById(R.id.textServername);
+        textViewServername.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
 
                 if (s != null && s.length() > 0)
@@ -83,8 +118,12 @@ public class ServerActivity extends Activity {
                 else
                     switchStartStopServer.setEnabled(false);
             }
-            public void beforeTextChanged(CharSequence s, int start, int count, int after){}
-            public void onTextChanged(CharSequence s, int start, int before, int count){}
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
         });
     }
 
@@ -111,8 +150,56 @@ public class ServerActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void startGame(View view){
-        Intent intent= new Intent(this, GameActivity.class);
+    public void startGame(View view) {
+        Intent intent = new Intent(this, GameActivity.class);
         startActivity(intent);
     }
+
+    public void addPlayer(Player player) {
+        listViewPlayerAdapter.add(player);
+    }
+
+    public void removePlayer(String playerName) {
+
+        Player playerToRemove = null;
+
+        for (Player activePlayer : currentPlayers) {
+            if (activePlayer.getName().equals(playerName))
+                playerToRemove = activePlayer;
+        }
+
+        listViewPlayerAdapter.remove(playerToRemove);
+    }
+
+    private String getIpAddress() {
+        String ip = "";
+        try {
+            Enumeration<NetworkInterface> enumNetworkInterfaces = NetworkInterface
+                    .getNetworkInterfaces();
+            while (enumNetworkInterfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = enumNetworkInterfaces
+                        .nextElement();
+                Enumeration<InetAddress> enumInetAddress = networkInterface
+                        .getInetAddresses();
+                while (enumInetAddress.hasMoreElements()) {
+                    InetAddress inetAddress = enumInetAddress.nextElement();
+
+                    if (inetAddress.isSiteLocalAddress()) {
+                        ip += inetAddress.getHostAddress();
+                    }
+
+                }
+
+            }
+
+        } catch (SocketException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            ip += "Something Wrong! " + e.toString() + "\n";
+        }
+
+        return ip;
+    }
 }
+
+;

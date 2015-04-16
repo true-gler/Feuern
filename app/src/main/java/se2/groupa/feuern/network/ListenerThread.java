@@ -1,5 +1,7 @@
 package se2.groupa.feuern.network;
 
+import android.os.Handler;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -9,7 +11,7 @@ import se2.groupa.feuern.controller.ServerController;
 
 /**
  * Created by Lukas on 16.03.15.
- */
+*/
 public class ListenerThread implements Runnable {
 
 
@@ -18,12 +20,14 @@ public class ListenerThread implements Runnable {
     private static final int SERVERPORT = 8888;
     private ArrayList<ServerThread> serverThreads;
     private ServerController serverController;
+    private Handler uiHandler;
 
-    public ListenerThread(String servername, ServerController serverController) {
+    public ListenerThread(String servername, ServerController serverController, Handler uiHandler) {
 
         this.servername = servername;
         this.serverThreads = new ArrayList<ServerThread>();
         this.serverController = serverController;
+        this.uiHandler = uiHandler;
     }
 
     public void run() {
@@ -50,11 +54,11 @@ public class ListenerThread implements Runnable {
 
                 connect to server:
                     telnet localhost 8888
-                 */
+                */
 
                 socket = serverSocket.accept();
 
-                ServerThread threadForClient = new ServerThread(socket, servername, serverController);
+                ServerThread threadForClient = new ServerThread(socket, servername, serverController, uiHandler);
                 serverThreads.add(threadForClient);
                 new Thread(threadForClient).start();
             } catch (IOException e) {
@@ -62,5 +66,4 @@ public class ListenerThread implements Runnable {
             }
         }
     }
-
 }

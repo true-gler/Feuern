@@ -115,4 +115,10 @@ public class Player implements Observer {
     public void update(Observable observable, Object data) {
         //TODO Notify player over wifi
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
+
 }

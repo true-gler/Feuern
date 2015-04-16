@@ -41,6 +41,11 @@ public class ServerController {
         return false;
     }
 
+    public static Player getPlayer(String playerName) {
+
+        return players.get(playerName);
+    }
+
     public static boolean deletePlayer(String playerName) {
         if (players.containsKey(playerName)) {
             players.remove(playerName);

@@ -21,6 +21,7 @@ public class ListenerThread implements Runnable {
     private ArrayList<ServerThread> serverThreads;
     private ServerController serverController;
     private Handler uiHandler;
+    private boolean isListening;
 
     public ListenerThread(String servername, ServerController serverController, Handler uiHandler) {
 
@@ -28,11 +29,13 @@ public class ListenerThread implements Runnable {
         this.serverThreads = new ArrayList<ServerThread>();
         this.serverController = serverController;
         this.uiHandler = uiHandler;
+        this.serverSocket = serverSocket;
     }
 
     public void run() {
 
         Socket socket = null;
+        isListening = true;
 
         try {
             serverSocket = new ServerSocket(SERVERPORT);
@@ -40,7 +43,7 @@ public class ListenerThread implements Runnable {
             e.printStackTrace();
         }
 
-        while (true) {
+        while (isListening) {
 
             try {
 
@@ -61,6 +64,32 @@ public class ListenerThread implements Runnable {
                 ServerThread threadForClient = new ServerThread(socket, servername, serverController, uiHandler);
                 serverThreads.add(threadForClient);
                 new Thread(threadForClient).start();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                try {
+                    serverSocket.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                isListening = false;
+            }
+        }
+    }
+
+    public void shutdown() {
+
+        // close all open connections from other clients
+        for (ServerThread st : serverThreads)
+        {
+            st.shutdown();
+        }
+
+        isListening = false;
+
+        if (serverSocket != null) {
+            try {
+                serverSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

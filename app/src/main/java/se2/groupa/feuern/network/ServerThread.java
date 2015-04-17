@@ -46,6 +46,7 @@ public class ServerThread implements Runnable {
         }
     }
 
+    @Override
     public void run() {
 
 
@@ -56,7 +57,7 @@ public class ServerThread implements Runnable {
             //output.write("Server: " + servername + "\n");
             //output.write("IP-Address: " + clientSocket.getInetAddress().getHostAddress() + "\n");
             //output.write("--------------------------------------\n");
-            output.write("[OK] connection established");
+            output.write("[OK] connection established\n");
             output.flush();
 
             while (isRunning) {
@@ -67,46 +68,57 @@ public class ServerThread implements Runnable {
                 {
                     output.write("[OK] " + servername);
                 }
-                else if (read.startsWith("registerAsPlayer"))
+                else if (read.startsWith("register"))
                 {
-                    String[] str = read.split(" ");
-                    String playerName = str[1];
+                    if (currentPlayerName == null || currentPlayerName.isEmpty())
+                    {
+                        String[] str = read.split(" ");
 
-                    if (serverController.addPlayer(playerName)) {
-                        output.write("[OK] player successfully registered");
+                        if (str.length > 0) {
+                            String playerName = str[1];
 
-                        Message msg = uiHandler.obtainMessage();
-                        msg.what = ServerControllerOperation.AddPlayer.getValue();
-                        msg.obj = serverController.getPlayer(playerName);
-                        uiHandler.sendMessage(msg);
+                            if (serverController.addPlayer(playerName)) {
+                                output.write("[OK] player successfully registered");
 
-                        currentPlayerName = playerName;
+                                Message msg = uiHandler.obtainMessage();
+                                msg.what = ServerControllerOperation.AddPlayer.getValue();
+                                msg.obj = serverController.getPlayer(playerName);
+                                uiHandler.sendMessage(msg);
+
+                                currentPlayerName = playerName;
+                            } else {
+                                output.write("[ERR] playername already exists");
+                            }
+                        }
+                        else
+                        {
+                            output.write("[ERR] pass playername as parameter");
+                        }
                     }
                     else
                     {
-                        output.write("[ERR] playername already exists");
+                        output.write("[ERR] you are already registered");
                     }
                 }
                 else if (read.startsWith("unregister"))
                 {
-                    String playerName = currentPlayerName;
-
-                    if (playerName == null || playerName.isEmpty()) {
-                        String[] str = read.split(" ");
-                        playerName = str[1];
-                    }
-
-                    if (serverController.deletePlayer(playerName)) {
-                        output.write("[OK] successfully unregistered");
-
-                        Message msg = uiHandler.obtainMessage();
-                        msg.what = ServerControllerOperation.RemovePlayer.getValue();
-                        msg.obj = playerName;
-                        uiHandler.sendMessage(msg);
+                    if (currentPlayerName == null || currentPlayerName.isEmpty()) {
+                        output.write("[ERR] you have not been registered yet");
                     }
                     else
                     {
-                        output.write("[ERR] could not unregister");
+                        if (serverController.deletePlayer(currentPlayerName)) {
+                            output.write("[OK] successfully unregistered");
+
+                            Message msg = uiHandler.obtainMessage();
+                            msg.what = ServerControllerOperation.RemovePlayer.getValue();
+                            msg.obj = currentPlayerName;
+                            uiHandler.sendMessage(msg);
+
+                            currentPlayerName = null;
+                        } else {
+                            output.write("[ERR] could not unregister");
+                        }
                     }
                 }
                 else if (read.equals("bye") || read.equals("quit"))
@@ -116,30 +128,50 @@ public class ServerThread implements Runnable {
                 }
                 else if (read.equals("help") || read.equals("?"))
                 {
-                    output.write("[OK] available commands: server, bye, help");
+                    output.write("[OK] available commands: server, register, unregister, help, bye");
                 }
                 else
                 {
                     output.write("[ERR] invalid command");
                 }
 
-                output.write("\n");
                 output.newLine();
                 output.flush();
             }
 
-            // close connections
-            input.close();
-            output.close();
-            clientSocket.close();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
         finally {
+            try {
+                // close connections
+                input.close();
+                output.close();
+                clientSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             input = null;
             output = null;
             clientSocket = null;
+        }
+    }
+
+    public void shutdown() {
+        isRunning = false;
+
+        try {
+            if (output != null) {
+                output.write("[INF] Server has been closed\n");
+                output.flush();
+            }
+
+            if (clientSocket != null)
+                clientSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

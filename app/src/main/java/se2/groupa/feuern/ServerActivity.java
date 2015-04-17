@@ -39,7 +39,7 @@ public class ServerActivity extends Activity {
     private ListView listViewPlayers;
     private ArrayList<Player> currentPlayers;
     private PlayerAdapter listViewPlayerAdapter;
-    ServerSocket serverSocket;
+    private ListenerThread listenerThread;
 
 
     private Thread serverThread = null;
@@ -86,9 +86,9 @@ public class ServerActivity extends Activity {
                     textViewServername.setEnabled(false);
 
                     serverController = new ServerController(textViewServername.getText().toString());
-
+                    listenerThread = new ListenerThread(textViewServername.getText().toString(), serverController, handler);
                     // start server
-                    serverThread = new Thread(new ListenerThread(textViewServername.getText().toString(), serverController, handler));
+                    serverThread = new Thread(listenerThread);
                     serverThread.start();
 
                     // TODO: update ui
@@ -97,13 +97,9 @@ public class ServerActivity extends Activity {
                 } else {
                     textViewServername.setEnabled(true);
 
-                    if (serverSocket != null) {
-                        try {
-                            serverSocket.close();
-                        } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
+                    if (serverThread != null && serverThread.isAlive() && listenerThread != null) {
+                        listenerThread.shutdown();
+                        listViewPlayerAdapter.clear();
                     }
                 }
             }

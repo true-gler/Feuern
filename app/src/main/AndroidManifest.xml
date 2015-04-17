@@ -2,9 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="se2.groupa.feuern" >
 
-    <uses-sdk android:minSdkVersion="14"></uses-sdk>
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+    <uses-sdk android:minSdkVersion="14" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:allowBackup="true"
@@ -23,18 +25,26 @@
         <activity
             android:name=".GameActivity"
             android:label="@string/title_activity_game"
-            android:parentActivityName=".LobbyActivity" >
+            android:parentActivityName=".ClientActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="se2.groupa.feuern.LobbyActivity" />
+                android:value=".ClientActivity" />
         </activity>
         <activity
-            android:name=".LobbyActivity"
-            android:label="@string/title_activity_lobby"
+            android:name=".ClientActivity"
+            android:label="ClientActivity"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="se2.groupa.feuern.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ServerActivity"
+            android:label="@string/title_activity_server"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="MainActivity" />
         </activity>
     </application>
 

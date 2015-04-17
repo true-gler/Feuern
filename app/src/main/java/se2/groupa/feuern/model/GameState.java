@@ -1,11 +1,10 @@
-package se2.groupa.feuern.controller;
+package se2.groupa.feuern.model;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-import se2.groupa.feuern.others.Card;
-import se2.groupa.feuern.others.CardDeck;
-import se2.groupa.feuern.others.Player;
+import se2.groupa.feuern.model.Card;
+import se2.groupa.feuern.model.CardDeck;
+import se2.groupa.feuern.model.Player;
 
 /**
  * Created by Markus on 31.03.2015.

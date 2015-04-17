@@ -3,20 +3,9 @@ package se2.groupa.feuern;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.InputDevice;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.Switch;
-import android.widget.TextView;
-
-import se2.groupa.feuern.network.ServerThread;
 
 
 /**
@@ -24,15 +13,21 @@ import se2.groupa.feuern.network.ServerThread;
  */
 public class MainActivity extends Activity {
 
-    private EditText textViewServername;
-    private Switch switchStartStopServer;
 
-    private Thread serverThread = null;
+    public void startClientActivity(View view){
+        Intent client= new Intent(this, ClientActivity.class);
+        startActivity(client);
+    }
 
-    //Nur zu Testzwecken
-    private void startGameActivity(){
-        Intent startTwo= new Intent(this, GameActivity.class);
-        startActivity(startTwo);
+    public void startServerActivity(View view){
+        Intent srv= new Intent(this, ServerActivity.class);
+        startActivity(srv);
+    }
+
+    public void exitApplication(View view)
+    {
+        this.finish();
+        System.exit(0);
     }
 
     @Override
@@ -41,53 +36,6 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_my);
 
 
-        //Nur zu Testzwecken, um zu schauen, was passiert,
-        // wenn man die GameActivity von der MainActivity aus startet
-        Button btn_newGame = (Button) findViewById(R.id.bNewGame);
-
-        btn_newGame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent();
-                startGameActivity();
-
-            }
-        });
-
-        switchStartStopServer = (Switch) findViewById(R.id.switchStartStopServer);
-        switchStartStopServer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                if (isChecked) {
-                    textViewServername.setEnabled(false);
-
-                    // start server
-                    serverThread = new Thread(new ServerThread(textViewServername.getText().toString()));
-                    serverThread.start();
-
-                    openNewGame(buttonView);
-
-                } else {
-                    textViewServername.setEnabled(true);
-
-                    if (serverThread != null)
-                        serverThread.interrupt();
-                }
-            }
-        });
-
-        textViewServername = (EditText)findViewById(R.id.textServername);
-        textViewServername.addTextChangedListener(new TextWatcher(){
-            public void afterTextChanged(Editable s) {
-
-                if (s != null && s.length() > 0)
-                    switchStartStopServer.setEnabled(true);
-                else
-                    switchStartStopServer.setEnabled(false);
-            }
-            public void beforeTextChanged(CharSequence s, int start, int count, int after){}
-            public void onTextChanged(CharSequence s, int start, int before, int count){}
-        });
     }
 
 
@@ -108,18 +56,5 @@ public class MainActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void openNewGame(View view){
-     //    Intent intent = new Intent(this, nextActivity.class);
-     //   startActivity(intent);
-
-
-        Intent i = new Intent(this, LobbyActivity.class);
-        startActivity(i);
-
-        System.out.println("New Game");
-        Log.d("MainActivity","debug msg");
-        Log.v("MainActivity","View msg");
     }
 }

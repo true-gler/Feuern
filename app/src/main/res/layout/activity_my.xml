@@ -13,64 +13,35 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/NewGame"
-        android:id="@+id/bNewGame"
-        android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/bExit"
-        android:layout_toStartOf="@+id/bExit" />
+        android:text="Server"
+        android:id="@+id/btnServer"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="132dp"
+        android:onClick="startServerActivity" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/Exit"
-        android:id="@+id/bExit"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:text="Client"
+        android:id="@+id/btnClient"
+        android:layout_centerVertical="true"
+        android:layout_alignLeft="@+id/btnServer"
+        android:layout_alignStart="@+id/btnServer"
+        android:layout_alignRight="@+id/btnServer"
+        android:layout_alignEnd="@+id/btnServer"
+        android:onClick="startClientActivity" />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textServername"
-        android:inputType="text"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:enabled="true"
-        android:hint="Servername"
-        android:layout_toLeftOf="@+id/switchStartStopServer"
-        android:layout_toStartOf="@+id/switchStartStopServer" />
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Active Servers"
-        android:id="@+id/textView"
-        android:layout_below="@+id/textServername"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Switch
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/switchStartStopServer"
-        android:layout_above="@+id/textView"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:textOff="Start"
-        android:textOn="Stop"
-        android:checked="false"
-        android:clickable="true"
-        android:enabled="false" />
-
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/listViewActiveServers"
-        android:layout_below="@+id/textView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_above="@+id/bNewGame" />
-
+        android:text="Exit"
+        android:id="@+id/btnExit"
+        android:layout_below="@+id/btnClient"
+        android:layout_alignLeft="@+id/btnClient"
+        android:layout_alignStart="@+id/btnClient"
+        android:layout_marginTop="47dp"
+        android:layout_alignRight="@+id/btnClient"
+        android:layout_alignEnd="@+id/btnClient"
+        android:onClick="exitApplication" />
 </RelativeLayout>

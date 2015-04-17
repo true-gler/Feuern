@@ -1,12 +1,10 @@
 package se2.groupa.feuern.controller;
 
-import android.widget.ImageButton;
-
 import java.util.ArrayList;
 
-import se2.groupa.feuern.R;
-import se2.groupa.feuern.others.Card;
-import se2.groupa.feuern.others.Player;
+import se2.groupa.feuern.model.Card;
+import se2.groupa.feuern.model.GameState;
+import se2.groupa.feuern.model.Player;
 
 /**
  * Created by Markus on 27.03.2015.
@@ -34,8 +32,19 @@ public class GameController {
 
         }
 
-        this.gamestate.setPublicCards(this.gamestate.getCardDeck().getThreeCardsFromStack());
+        //this.gamestate.setPublicCards(this.gamestate.getCardDeck().getThreeCardsFromStack());
 
+        return this.gamestate;
+    }
+
+    public GameState KeepCardsFinishDealing(){
+        this.gamestate.setPublicCards(this.gamestate.getCardDeck().getThreeCardsFromStack());
+        return this.gamestate;
+    }
+
+    public GameState DontKeepCardsFinishDealing(){
+        this.gamestate.setPublicCards(this.gamestate.getNowTurnPlayer().getCards());
+        this.gamestate.getNowTurnPlayer().setCards(this.gamestate.getCardDeck().getThreeCardsFromStack());
         return this.gamestate;
     }
 

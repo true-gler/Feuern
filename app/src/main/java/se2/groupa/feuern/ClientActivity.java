@@ -1,9 +1,13 @@
 package se2.groupa.feuern;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 
 /** Lobby activity
@@ -14,12 +18,12 @@ import android.view.MenuItem;
  * and a button start game
  */
 
-public class LobbyActivity extends Activity {
+public class ClientActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lobby);
+        setContentView(R.layout.activity_client);
     }
 
 

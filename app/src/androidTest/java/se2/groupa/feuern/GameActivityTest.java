@@ -2,15 +2,6 @@ package se2.groupa.feuern;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.SmallTest;
-import android.widget.ImageButton;
-
-import java.util.ArrayList;
-
-import se2.groupa.feuern.GameActivity;
-import se2.groupa.feuern.controller.GameController;
-import se2.groupa.feuern.others.Card;
-import se2.groupa.feuern.others.CardDeck;
-import se2.groupa.feuern.others.Player;
 
 /**
  * Created by Markus on 31.03.2015.

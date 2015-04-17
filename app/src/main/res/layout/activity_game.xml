@@ -4,7 +4,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:id="@+id/textView_KeepCards">
 
     <ImageButton
         android:layout_width="96dp"
@@ -129,6 +130,45 @@
         android:onClick="next"
         android:id="@+id/buttonNext"
         android:layout_above="@+id/textViewPublicCards"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ja"
+        android:id="@+id/buttonKeepCardsYes"
+        android:layout_alignBottom="@+id/publicCardsMiddle"
+        android:layout_toRightOf="@+id/TextViewNowTurnPlayer"
+        android:layout_toEndOf="@+id/TextViewNowTurnPlayer"
+        android:onClick="KeepCardsYes" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nein"
+        android:id="@+id/buttonKeepCardsNo"
+        android:layout_alignBottom="@+id/publicCardsMiddle"
+        android:layout_toLeftOf="@+id/TextViewNextTurnPlayer"
+        android:layout_toStartOf="@+id/TextViewNextTurnPlayer"
+        android:onClick="KeepCardsNo" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wollen Sie die Karten behalten?"
+        android:id="@+id/textView_wantToKeepCards"
+        style="@android:style/TextAppearance.Holo.Medium"
+        android:layout_above="@+id/buttonKeepCardsYes"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="36dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00"
+        android:id="@+id/textView_points"
+        style="@android:style/TextAppearance.Large"
+        android:layout_alignTop="@+id/TextViewNextTurnPlayer"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

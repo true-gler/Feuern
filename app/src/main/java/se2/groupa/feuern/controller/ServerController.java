@@ -1,62 +1,61 @@
 package se2.groupa.feuern.controller;
 
-import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.HashMap;
 
-import se2.groupa.feuern.others.CardDeck;
-import se2.groupa.feuern.others.Player;
+import se2.groupa.feuern.model.CardDeck;
+import se2.groupa.feuern.model.Player;
 
 /**
  * Created by Taurer on 30.03.2015.
  */
-public class ServerController extends Observable{
-    private  ArrayList<Player> players;
-    private CardDeck cardDeck;
+public class ServerController {
+    private static HashMap<String, Player> players;
+    private static CardDeck cardDeck;
+    private static Thread listenerThread = null;
+    private String servername;
 
-    public ServerController() {
-        this.players = new ArrayList<Player>();
+    public ServerController(String servername) {
+        players = new HashMap<String, Player>();
         cardDeck = new CardDeck();
+        this.servername = servername;
     }
 
-    public void dealOutCardsToPlayer(){
-        for(Player player : players){
+    public static void dealOutCardsToPlayer(){
+        for(Player player : players.values()){
             if(player.isAlive()){
                 player.setCards(cardDeck.getThreeCardsFromStack());
             }
         }
     }
 
-    public  ArrayList<Player> getPlayers() {
+    public static HashMap<String, Player> getPlayers() {
         return players;
     }
 
-    public  void addPlayer(Player player) {
-        this.players.add(player);
-        addObserver(player);
+    public static boolean addPlayer(String playerName) {
+        if (!players.containsKey(playerName)) {
+            players.put(playerName, new Player(playerName));
+            return true;
+        }
+
+        return false;
     }
 
-    public void deletePlayer(Player player) {
-        this.players.remove(player);
-        deleteObserver(player);
+    public static Player getPlayer(String playerName) {
+
+        return players.get(playerName);
     }
 
-    public int getNumberOfPlayers(){
+    public static boolean deletePlayer(String playerName) {
+        if (players.containsKey(playerName)) {
+            players.remove(playerName);
+            return true;
+        }
+
+        return false;
+    }
+
+    public static int getNumberOfPlayers(){
         return players.size();
-    }
-
-    @Override
-    public void addObserver(Observer observer) {
-        super.addObserver(observer);
-    }
-
-    @Override
-    public synchronized void deleteObserver(Observer observer) {
-        super.deleteObserver(observer);
-    }
-
-    @Override
-    public void notifyObservers() {
-        super.notifyObservers();
     }
 }

@@ -6,19 +6,18 @@ import java.util.Observer;
 /**
  * Created by Taurer on 30.03.2015.
  */
-public class Player implements Observer {
+public class Player implements Observer, Comparable<Player> {
     private int id;     //used for lineup
     private String name;
     private Card[] cards;
     private int livePoints;
 
     public Player(String name) {
-       // this.id = id;
+        // this.id = id;
         this.name = name;
         this.cards = new Card[3];
         this.livePoints = 4;
     }
-
 
 
     public int getId() {
@@ -33,12 +32,12 @@ public class Player implements Observer {
         return cards;
     }
 
-    public int getLivePoints() {
-        return livePoints;
-    }
-
     public void setCards(Card[] cards) {
         this.cards = cards;
+    }
+
+    public int getLivePoints() {
+        return livePoints;
     }
 
     public void decrementLivePoints() {
@@ -90,7 +89,7 @@ public class Player implements Observer {
                 sum[2] += cards[i].getValue();
             } else if (cards[i].getColor() == Card.KREUZ) {
                 sum[3] += cards[i].getValue();
-            }else{
+            } else {
                 return -1;
             }
         }
@@ -121,4 +120,15 @@ public class Player implements Observer {
         return getName();
     }
 
+    @Override
+    public int compareTo(Player player) {
+        if (this.getCardPoints() < player.getCardPoints())
+            return 1;
+        if (this.getCardPoints() > player.getCardPoints()) {
+            return -1;
+        } else {
+            return 0;
+        }
+
+    }
 }

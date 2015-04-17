@@ -5,21 +5,48 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collections;
+
+import se2.groupa.feuern.adapters.PlayerAdapter;
 import se2.groupa.feuern.controller.GameController;
+import se2.groupa.feuern.model.Player;
 
 
 public class ResultActivity extends Activity {
 
     private GameController gameController = FeuernHelper.gameController;
+    private ArrayList<Player> playerList;
+    private ListView listView;
+    private PlayerAdapter playerAdapter;
+
+    public void fillListView(){
+        listView = (ListView) findViewById(R.id.listView);
+        playerAdapter = new PlayerAdapter(this, playerList);
+        listView.setAdapter(playerAdapter);
+        playerAdapter.add(new Player("Michael"));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
-        TextView show = (TextView) findViewById(R.id.textView_show);
-        show.setText(gameController.getGameState().getNextTurnPlayer().getName());
+
+        listView = (ListView) findViewById(R.id.listView);
+        playerList = new ArrayList<Player>();
+        playerAdapter = new PlayerAdapter(this, playerList);
+        listView.setAdapter(playerAdapter);
+        //playerAdapter.add(new Player("Michael"));
+        //playerAdapter.addAll(gameController.getGameState().getPlayers());
+        playerList.addAll(gameController.getGameState().getPlayers());
+        Collections.sort(playerList);
+
     }
 
 

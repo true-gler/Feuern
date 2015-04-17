@@ -18,7 +18,7 @@ import se2.groupa.feuern.controller.ServerController;
  */
 public class ServerThread implements Runnable {
 
-    private String servername;
+    private String serverName;
     private Socket clientSocket;
     private ServerController serverController;
     private Handler uiHandler;
@@ -29,9 +29,9 @@ public class ServerThread implements Runnable {
 
     private boolean isRunning;
 
-    public ServerThread(Socket clientSocket, String servername, ServerController serverController, Handler uiHandler) {
+    public ServerThread(Socket clientSocket, String serverName, ServerController serverController, Handler uiHandler) {
 
-        this.servername = servername;
+        this.serverName = serverName;
         this.clientSocket = clientSocket;
         this.serverController = serverController;
         this.uiHandler = uiHandler;
@@ -52,11 +52,7 @@ public class ServerThread implements Runnable {
 
         try {
             isRunning = true;
-            //output.write("--------------------------------------\n");
-            //output.write("Welcome to FEUERN\n");
-            //output.write("Server: " + servername + "\n");
-            //output.write("IP-Address: " + clientSocket.getInetAddress().getHostAddress() + "\n");
-            //output.write("--------------------------------------\n");
+
             output.write("[OK] connection established\n");
             output.flush();
 
@@ -64,82 +60,81 @@ public class ServerThread implements Runnable {
 
                 String read = input.readLine();
 
-                if (read.equals("server"))
+                if (read.toLowerCase().equals(CommunicationCommand.GetServername.toString().toLowerCase()))
                 {
-                    output.write("[OK] " + servername);
+                    output.write("[OK] " + serverName);
                 }
-                else if (read.startsWith("register"))
+                else if (read.toLowerCase().startsWith(CommunicationCommand.Register.toString().toLowerCase()))
                 {
-                    if (currentPlayerName == null || currentPlayerName.isEmpty())
+                    if (serverController.getPlayers().size() == 9)
                     {
-                        String[] str = read.split(" ");
-
-                        if (str.length > 0) {
-                            String playerName = str[1];
-
-                            if (serverController.addPlayer(playerName)) {
-                                output.write("[OK] player successfully registered");
-
-                                Message msg = uiHandler.obtainMessage();
-                                msg.what = ServerControllerOperation.AddPlayer.getValue();
-                                msg.obj = serverController.getPlayer(playerName);
-                                uiHandler.sendMessage(msg);
-
-                                currentPlayerName = playerName;
-                            } else {
-                                output.write("[ERR] playername already exists");
-                            }
-                        }
-                        else
-                        {
-                            output.write("[ERR] pass playername as parameter");
-                        }
+                        output.write("[ER] server is already full");
                     }
                     else
                     {
-                        output.write("[ERR] you are already registered");
+                        if (currentPlayerName == null || currentPlayerName.isEmpty()) {
+                            String[] str = read.split(" ");
+
+                            if (str.length > 0) {
+                                String playerName = str[1];
+
+                                if (serverController.addPlayer(playerName)) {
+                                    output.write("[OK] successfully registered");
+
+                                    Message msg = uiHandler.obtainMessage();
+                                    msg.what = ServerControllerOperation.AddPlayer.getValue();
+                                    msg.obj = serverController.getPlayer(playerName);
+                                    uiHandler.sendMessage(msg);
+
+                                    currentPlayerName = playerName;
+                                } else {
+                                    output.write("[ER] playername already exists");
+                                }
+                            } else {
+                                output.write("[ER] pass playername as parameter");
+                            }
+                        } else {
+                            output.write("[ER] you are already registered");
+                        }
                     }
                 }
-                else if (read.startsWith("unregister"))
+                else if (read.toLowerCase().equals(CommunicationCommand.Unregister.toString().toLowerCase()))
                 {
                     if (currentPlayerName == null || currentPlayerName.isEmpty()) {
-                        output.write("[ERR] you have not been registered yet");
+                        output.write("[ER] you have not been registered yet");
                     }
                     else
                     {
-                        if (serverController.deletePlayer(currentPlayerName)) {
-                            output.write("[OK] successfully unregistered");
-
-                            Message msg = uiHandler.obtainMessage();
-                            msg.what = ServerControllerOperation.RemovePlayer.getValue();
-                            msg.obj = currentPlayerName;
-                            uiHandler.sendMessage(msg);
-
-                            currentPlayerName = null;
-                        } else {
-                            output.write("[ERR] could not unregister");
-                        }
+                        unregister(false);
                     }
                 }
-                else if (read.equals("bye") || read.equals("quit"))
+                else if (read.toLowerCase().equals(CommunicationCommand.Bye.toString().toLowerCase()) || read.toLowerCase().equals(CommunicationCommand.Quit.toString().toLowerCase()))
                 {
+                    unregister(true);
                     isRunning = false;
                     output.write("[OK] Bye");
                 }
-                else if (read.equals("help") || read.equals("?"))
+                else if (read.toLowerCase().equals(CommunicationCommand.Help.toString().toLowerCase()) || read.equals("?"))
                 {
-                    output.write("[OK] available commands: server, register, unregister, help, bye");
+                    String result = "[OK] available commands: ";
+
+                    for (CommunicationCommand command : CommunicationCommand.values())
+                    {
+                        result += command.toString() + ", ";
+                    }
+
+                    // remove last ", "
+                    result = result.substring(0, result.length() - 2);
+                    output.write(result);
                 }
                 else
                 {
-                    output.write("[ERR] invalid command");
+                    output.write("[ER] invalid command");
                 }
 
                 output.newLine();
                 output.flush();
             }
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -152,10 +147,30 @@ public class ServerThread implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
 
-            input = null;
-            output = null;
-            clientSocket = null;
+    private void unregister(boolean isSuppressed)
+    {
+        try {
+            if (currentPlayerName != null && !currentPlayerName.isEmpty()) {
+                if (serverController.deletePlayer(currentPlayerName)) {
+                    if (!isSuppressed)
+                        output.write("[OK] successfully unregistered");
+
+                    Message msg = uiHandler.obtainMessage();
+                    msg.what = ServerControllerOperation.RemovePlayer.getValue();
+                    msg.obj = currentPlayerName;
+                    uiHandler.sendMessage(msg);
+
+                    currentPlayerName = null;
+                } else {
+                    if (!isSuppressed)
+                        output.write("[ER] could not unregister");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -164,7 +179,7 @@ public class ServerThread implements Runnable {
 
         try {
             if (output != null) {
-                output.write("[INF] Server has been closed\n");
+                output.write("[IF] Server has been closed\n");
                 output.flush();
             }
 
@@ -175,3 +190,4 @@ public class ServerThread implements Runnable {
         }
     }
 }
+

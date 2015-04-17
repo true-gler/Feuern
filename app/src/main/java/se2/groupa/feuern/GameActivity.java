@@ -92,7 +92,7 @@ public class GameActivity extends Activity {
         btn_publicCardsLeft.setImageResource(gameController.getGameState().getPublicCards()[2].getDrawable());
 
         cardPoints = gameController.getGameState().getNowTurnPlayer().getCardPoints();
-        img_points.setText("" + cardPoints);
+        img_points.setText(""+cardPoints);
     }
 
     public void firstDeal(){
@@ -160,7 +160,7 @@ public class GameActivity extends Activity {
 
     public void showResult (View v){
         Intent intent = new Intent(this, ResultActivity.class );
-        int gi = 0;
+        startActivity(intent);
     }
 
     public void switchCardsPublic(View v){
@@ -203,8 +203,6 @@ public class GameActivity extends Activity {
         ImageButton btn_ownCardsLeft = (ImageButton) findViewById(R.id.ownCardsLeft);
         Button btn_next = (Button) findViewById(R.id.buttonNext);
         RelativeLayout textView_GameActivity = (RelativeLayout) findViewById(R.id.textView_GameActivity);
-
-
 
         if(stop==true && gameController.getGameState().getPlayers().
                 indexOf(gameController.getGameState().getNextTurnPlayer()) == stopPosition){
@@ -275,9 +273,9 @@ public class GameActivity extends Activity {
             players.add(new Player("player" + i));
         }
         gameController = new GameController(players);
+        FeuernHelper.gameController = this.gameController;
         firstDeal();
-        //gameController.dealingOutCards();
-        //updateButtons();
+
 
         btn_publicCardsRight.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -295,16 +293,12 @@ public class GameActivity extends Activity {
             Button btn_next = (Button) findViewById(R.id.buttonNext);
             @Override
             public boolean onLongClick(View v) {
-
-                if(!moveDone &&
-                        (gameController.getGameState().getCounter()>=
-                        gameController.getGameState().getPlayers().size())) {
+                if(!moveDone && gameController.getGameState().getCounter() >=
+                        gameController.getGameState().getPlayers().size()) {
                     stop = true;
                     stopPosition = gameController.stop();
                     btn_next.setText("Stop gedrückt!");
                 }
-
-
                 return true;
             }
         });

@@ -2,16 +2,24 @@ package se2.groupa.feuern;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import se2.groupa.feuern.controller.GameController;
 
 
 public class ResultActivity extends Activity {
+
+    private GameController gameController = FeuernHelper.gameController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
+        TextView show = (TextView) findViewById(R.id.textView_show);
+        show.setText(gameController.getGameState().getNextTurnPlayer().getName());
     }
 
 

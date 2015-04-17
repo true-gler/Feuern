@@ -168,7 +168,7 @@
         android:text="00"
         android:id="@+id/textView_points"
         style="@android:style/TextAppearance.Large"
-        android:layout_alignTop="@+id/TextViewNextTurnPlayer"
+        android:layout_above="@+id/buttonNext"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

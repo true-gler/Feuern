@@ -225,6 +225,19 @@ public class GameActivity extends Activity {
         }
     }
 
+    public boolean allOrNothing (){
+
+        if((gameController.getGameState().getPublicCards()[0].getColor()==
+                 gameController.getGameState().getPublicCards()[1].getColor())  &&
+           (gameController.getGameState().getPublicCards()[1].getColor() ==
+                gameController.getGameState().getPublicCards()[2].getColor())
+                ){
+            return true;
+        }
+        return false;
+
+    }
+
 
 
     @Override

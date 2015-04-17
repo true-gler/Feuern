@@ -1,12 +1,14 @@
 package se2.groupa.feuern;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -90,7 +92,7 @@ public class GameActivity extends Activity {
         btn_publicCardsLeft.setImageResource(gameController.getGameState().getPublicCards()[2].getDrawable());
 
         cardPoints = gameController.getGameState().getNowTurnPlayer().getCardPoints();
-        img_points.setText(""+cardPoints);
+        img_points.setText("" + cardPoints);
     }
 
     public void firstDeal(){
@@ -132,7 +134,7 @@ public class GameActivity extends Activity {
 
 
     public void switchCardsOwn(View v){
-        if(!moveDone) {
+        if(!moveDone && !allOrNothing()) {
             Card card = null;
             if (v.getId() == R.id.ownCardsRight) {
                 card = gameController.getGameState().getNowTurnPlayer().getCards()[0];
@@ -156,8 +158,12 @@ public class GameActivity extends Activity {
 
     }
 
+    public void showResult (View v){
+        Intent intent = new Intent(this, ResultActivity.class );
+    }
+
     public void switchCardsPublic(View v){
-        if(!moveDone) {
+        if(!moveDone && !allOrNothing()) {
             Card card = null;
             if (v.getId() == R.id.publicCardsRight) {
                 card = gameController.getGameState().getPublicCards()[0];
@@ -195,6 +201,9 @@ public class GameActivity extends Activity {
         ImageButton btn_ownCardsMiddle = (ImageButton) findViewById(R.id.ownCardsMiddle);
         ImageButton btn_ownCardsLeft = (ImageButton) findViewById(R.id.ownCardsLeft);
         Button btn_next = (Button) findViewById(R.id.buttonNext);
+        RelativeLayout textView_GameActivity = (RelativeLayout) findViewById(R.id.textView_GameActivity);
+
+
 
         if(stop==true && gameController.getGameState().getPlayers().
                 indexOf(gameController.getGameState().getNextTurnPlayer()) == stopPosition){
@@ -216,12 +225,14 @@ public class GameActivity extends Activity {
             btn_ownCardsMiddle.setClickable(false);
             btn_ownCardsLeft.setClickable(false);
             btn_next.setClickable(false);
+            textView_GameActivity.setClickable(true);
 
         }
         else {
             gameController.doStep();
             moveDone = false;
             updateButtons();
+            gameController.getGameState().incCounter();
         }
     }
 
@@ -270,7 +281,7 @@ public class GameActivity extends Activity {
         btn_publicCardsRight.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if(!moveDone) {
+                if(!moveDone && allOrNothing()) {
                     gameController.swapAllCards();
                     updateButtons();
                     moveDone = true;
@@ -284,9 +295,13 @@ public class GameActivity extends Activity {
             @Override
             public boolean onLongClick(View v) {
 
+                if(!moveDone &&
+                        (gameController.getGameState().getCounter()>=
+                        gameController.getGameState().getPlayers().size())) {
                     stop = true;
                     stopPosition = gameController.stop();
                     btn_next.setText("Stop gedrückt!");
+                }
 
 
                 return true;

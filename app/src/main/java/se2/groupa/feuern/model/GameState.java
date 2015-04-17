@@ -59,7 +59,7 @@ public class GameState {
         return this.players;
     }
 
-    public void incCounter(int counter){
+    public void incCounter(){
         this.counter++;
     }
 

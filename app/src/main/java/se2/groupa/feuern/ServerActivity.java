@@ -58,7 +58,8 @@ public class ServerActivity extends Activity {
         listViewPlayerAdapter = new PlayerAdapter(this, currentPlayers);
         listViewPlayers.setAdapter(listViewPlayerAdapter);
 
-        // addPlayer(new Player("Lukas"));
+         addPlayer(new Player("Lukas"));
+        listViewPlayerAdapter.add(new Player("Michael"));
         // addPlayer(new Player("Thomas"));
 
         final Handler handler = new Handler(){

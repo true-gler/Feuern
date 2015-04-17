@@ -160,6 +160,7 @@ public class GameActivity extends Activity {
 
     public void showResult (View v){
         Intent intent = new Intent(this, ResultActivity.class );
+        int gi = 0;
     }
 
     public void switchCardsPublic(View v){

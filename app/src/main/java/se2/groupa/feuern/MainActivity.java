@@ -3,9 +3,13 @@ package se2.groupa.feuern;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 
 /**
@@ -13,6 +17,9 @@ import android.view.View;
  */
 public class MainActivity extends Activity {
 
+    private EditText etNickname;
+    private Button btnServer;
+    private Button btnClient;
 
     public void startClientActivity(View view){
         Intent client= new Intent(this, ClientActivity.class);
@@ -20,8 +27,9 @@ public class MainActivity extends Activity {
     }
 
     public void startServerActivity(View view){
-        Intent srv= new Intent(this, ServerActivity.class);
-        startActivity(srv);
+        Intent server= new Intent(this, ServerActivity.class);
+        server.putExtra("PlayerName", etNickname.getText().toString());
+        startActivity(server);
     }
 
     public void exitApplication(View view)
@@ -35,9 +43,31 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
 
+        btnServer = (Button) findViewById(R.id.btnServer);
+        btnClient = (Button) findViewById(R.id.btnClient);
+        btnServer.setEnabled(false);
+        btnClient.setEnabled(false);
 
+        etNickname = (EditText) findViewById(R.id.etNickname);
+        etNickname.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+
+                if (s != null && s.length() > 0) {
+                    btnServer.setEnabled(true);
+                    btnClient.setEnabled(true);
+                } else {
+                    btnServer.setEnabled(false);
+                    btnClient.setEnabled(false);
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

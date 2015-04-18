@@ -189,5 +189,21 @@ public class ServerThread implements Runnable {
             e.printStackTrace();
         }
     }
+
+    public void executeCommand(CommunicationCommand command)
+    {
+        try {
+            if (output != null) {
+
+                if (command == CommunicationCommand.StartGame)
+                {
+                    output.write("[RQ] " + command.toString() + "\n");
+                    output.flush();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
 

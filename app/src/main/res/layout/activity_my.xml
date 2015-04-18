@@ -44,4 +44,14 @@
         android:layout_alignRight="@+id/btnClient"
         android:layout_alignEnd="@+id/btnClient"
         android:onClick="exitApplication" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/etNickname"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:inputType="text|textPersonName"
+        android:hint="Enter your Nickname" />
+
 </RelativeLayout>

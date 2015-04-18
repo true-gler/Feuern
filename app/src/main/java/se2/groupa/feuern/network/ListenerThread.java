@@ -95,4 +95,12 @@ public class ListenerThread implements Runnable {
             }
         }
     }
+
+    public void broadcastCommand(CommunicationCommand command)
+    {
+        for (ServerThread st : serverThreads)
+        {
+            st.executeCommand(command);
+        }
+    }
 }

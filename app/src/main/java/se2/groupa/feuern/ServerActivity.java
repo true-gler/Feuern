@@ -10,16 +10,15 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.ServerSocket;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -27,6 +26,8 @@ import java.util.Enumeration;
 import se2.groupa.feuern.adapters.PlayerAdapter;
 import se2.groupa.feuern.controller.ServerController;
 import se2.groupa.feuern.model.Player;
+import se2.groupa.feuern.network.ClientThread;
+import se2.groupa.feuern.network.CommunicationCommand;
 import se2.groupa.feuern.network.ListenerThread;
 
 
@@ -39,10 +40,14 @@ public class ServerActivity extends Activity {
     private ListView listViewPlayers;
     private ArrayList<Player> currentPlayers;
     private PlayerAdapter listViewPlayerAdapter;
+    private Button btnStartGame;
+    private String playerName;
+
+
+    private Thread parentThread = null;
     private ListenerThread listenerThread;
-
-
-    private Thread serverThread = null;
+    private Thread parentClientThread = null;
+    private ClientThread clientThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +56,8 @@ public class ServerActivity extends Activity {
 
         tvServerIpAddress = (TextView) findViewById(R.id.tvServerIpAddress);
         listViewPlayers = (ListView) findViewById(R.id.listViewPlayers);
+        btnStartGame = (Button) findViewById(R.id.btnStartGame);
+        btnStartGame.setEnabled(false);
 
         tvServerIpAddress.setText("Share your IP: " + getIpAddress());
 
@@ -58,9 +65,16 @@ public class ServerActivity extends Activity {
         listViewPlayerAdapter = new PlayerAdapter(this, currentPlayers);
         listViewPlayers.setAdapter(listViewPlayerAdapter);
 
-         addPlayer(new Player("Lukas"));
-        listViewPlayerAdapter.add(new Player("Michael"));
-        // addPlayer(new Player("Thomas"));
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if(extras == null) {
+                playerName = null;
+            } else {
+                playerName = extras.getString("PlayerName");
+            }
+        } else {
+            playerName = (String) savedInstanceState.getSerializable("PlayerName");
+        }
 
         final Handler handler = new Handler(){
             @Override
@@ -89,16 +103,17 @@ public class ServerActivity extends Activity {
                     serverController = new ServerController(textViewServername.getText().toString());
                     listenerThread = new ListenerThread(textViewServername.getText().toString(), serverController, handler);
                     // start server
-                    serverThread = new Thread(listenerThread);
-                    serverThread.start();
+                    parentThread = new Thread(listenerThread);
+                    parentThread.start();
 
-                    // TODO: update ui
-                    // TODO: start client thread automatically?
+                    clientThread = new ClientThread(getIpAddress(), 8888, textViewServername.getText().toString(), playerName, handler);
+                    parentClientThread = new Thread(clientThread);
+                    parentClientThread.start();
 
                 } else {
                     textViewServername.setEnabled(true);
 
-                    if (serverThread != null && serverThread.isAlive() && listenerThread != null) {
+                    if (parentThread != null && parentThread.isAlive() && listenerThread != null) {
                         listenerThread.shutdown();
                         listViewPlayerAdapter.clear();
                     }
@@ -148,12 +163,19 @@ public class ServerActivity extends Activity {
     }
 
     public void startGame(View view) {
+
+
+        if (parentThread != null && parentThread.isAlive() && listenerThread != null) {
+            listenerThread.broadcastCommand(CommunicationCommand.StartGame);
+        }
+
         Intent intent = new Intent(this, GameActivity.class);
         startActivity(intent);
     }
 
     public void addPlayer(Player player) {
         listViewPlayerAdapter.add(player);
+        updateEnabledOfStartGameButton();
     }
 
     public void removePlayer(String playerName) {
@@ -166,6 +188,17 @@ public class ServerActivity extends Activity {
         }
 
         listViewPlayerAdapter.remove(playerToRemove);
+        updateEnabledOfStartGameButton();
+    }
+
+    private void updateEnabledOfStartGameButton()
+    {
+        if (currentPlayers != null && currentPlayers.size() > 1) {
+            btnStartGame.setEnabled(true);
+        }
+        else {
+            btnStartGame.setEnabled(false);
+        }
     }
 
     private String getIpAddress() {
@@ -198,5 +231,3 @@ public class ServerActivity extends Activity {
         return ip;
     }
 }
-
-;

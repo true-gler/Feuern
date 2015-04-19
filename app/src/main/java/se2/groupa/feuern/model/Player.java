@@ -1,12 +1,13 @@
 package se2.groupa.feuern.model;
 
+import java.io.Serializable;
 import java.util.Observable;
 import java.util.Observer;
 
 /**
  * Created by Taurer on 30.03.2015.
  */
-public class Player implements Observer, Comparable<Player> {
+public class Player implements Observer, Comparable<Player>, Serializable {
     private int id;     //used for lineup
     private String name;
     private Card[] cards;

@@ -23,6 +23,7 @@ public class MainActivity extends Activity {
 
     public void startClientActivity(View view){
         Intent client= new Intent(this, ClientActivity.class);
+        client.putExtra("PlayerName", etNickname.getText().toString());
         startActivity(client);
     }
 

@@ -1,5 +1,6 @@
 package se2.groupa.feuern.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import se2.groupa.feuern.model.Card;
@@ -10,7 +11,7 @@ import se2.groupa.feuern.model.Player;
  * Created by Markus on 31.03.2015.
  */
 
-public class GameState {
+public class GameState implements Serializable {
 
     private CardDeck deck;
     private ArrayList<Player> players;

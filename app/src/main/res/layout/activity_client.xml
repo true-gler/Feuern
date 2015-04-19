@@ -9,10 +9,67 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Your Server IP: "
-        android:id="@+id/btnServer"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Servername:"
+        android:id="@+id/textView2"
+        android:layout_alignBottom="@+id/etServerName"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="IP Address:"
+        android:id="@+id/textView3"
+        android:layout_alignBottom="@+id/etIPAddress"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/etServerName"
+        android:hint="Enter Servername"
         android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/etIPAddress"
+        android:layout_alignEnd="@+id/etIPAddress" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/etIPAddress"
+        android:hint="Enter IP Address"
+        android:layout_below="@+id/etServerName"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Connect"
+        android:id="@+id/btnConnectDisconnect"
+        android:layout_below="@+id/etIPAddress"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="connectDisconnectServer" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lvServerPlayers"
+        android:layout_below="@+id/btnConnectDisconnect"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:choiceMode="none" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Players on Server"
+        android:id="@+id/textView4"
+        android:layout_above="@+id/lvServerPlayers"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 </RelativeLayout>

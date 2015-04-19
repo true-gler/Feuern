@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,19 +17,18 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 
 import se2.groupa.feuern.adapters.PlayerAdapter;
 import se2.groupa.feuern.controller.ServerController;
 import se2.groupa.feuern.model.Player;
-import se2.groupa.feuern.network.ClientThread;
-import se2.groupa.feuern.network.CommunicationCommand;
-import se2.groupa.feuern.network.ListenerThread;
+import se2.groupa.feuern.network.threads.ClientThread;
+import se2.groupa.feuern.network.classes.CommunicationCommand;
+import se2.groupa.feuern.network.threads.ListenerThread;
+import se2.groupa.feuern.network.classes.NetworkHelper;
+import se2.groupa.feuern.network.classes.Operations;
 
 
 public class ServerActivity extends Activity {
@@ -43,7 +43,7 @@ public class ServerActivity extends Activity {
     private Button btnStartGame;
     private String playerName;
 
-
+    private Handler handler;
     private Thread parentThread = null;
     private ListenerThread listenerThread;
     private Thread parentClientThread = null;
@@ -59,7 +59,7 @@ public class ServerActivity extends Activity {
         btnStartGame = (Button) findViewById(R.id.btnStartGame);
         btnStartGame.setEnabled(false);
 
-        tvServerIpAddress.setText("Share your IP: " + getIpAddress());
+        tvServerIpAddress.setText("Share your IP: " + NetworkHelper.getIPAddress());
 
         currentPlayers = new ArrayList<Player>();
         listViewPlayerAdapter = new PlayerAdapter(this, currentPlayers);
@@ -76,19 +76,30 @@ public class ServerActivity extends Activity {
             playerName = (String) savedInstanceState.getSerializable("PlayerName");
         }
 
-        final Handler handler = new Handler(){
+        handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                if (msg.what == ServerControllerOperation.AddPlayer.getValue()) {
+                if (msg.what == Operations.AddPlayer.getValue()) {
                     if ((Player) msg.obj != null) {
                         addPlayer((Player) msg.obj);
                     }
                 }
-                if (msg.what == ServerControllerOperation.RemovePlayer.getValue()) {
+                else if (msg.what == Operations.RemovePlayer.getValue()) {
                     if ((String) msg.obj != null) {
                         removePlayer((String) msg.obj);
                     }
                 }
+                else if (msg.what == Operations.StartGame.getValue()) {
+                    ShowGameActivity();
+                }
+                else if (msg.what == Operations.MakeToast.getValue()) {
+                    if ((String)msg.obj != null)
+                        Toast.makeText(getApplicationContext(), (String)msg.obj, Toast.LENGTH_SHORT).show();
+                }
+                else if (msg.what == Operations.StopServer.getValue()) {
+                    stopServer();
+                }
+
                 super.handleMessage(msg);
             }
         };
@@ -98,25 +109,9 @@ public class ServerActivity extends Activity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 if (isChecked) {
-                    textViewServername.setEnabled(false);
-
-                    serverController = new ServerController(textViewServername.getText().toString());
-                    listenerThread = new ListenerThread(textViewServername.getText().toString(), serverController, handler);
-                    // start server
-                    parentThread = new Thread(listenerThread);
-                    parentThread.start();
-
-                    clientThread = new ClientThread(getIpAddress(), 8888, textViewServername.getText().toString(), playerName, handler);
-                    parentClientThread = new Thread(clientThread);
-                    parentClientThread.start();
-
+                    startServer();
                 } else {
-                    textViewServername.setEnabled(true);
-
-                    if (parentThread != null && parentThread.isAlive() && listenerThread != null) {
-                        listenerThread.shutdown();
-                        listViewPlayerAdapter.clear();
-                    }
+                    stopServer();
                 }
             }
         });
@@ -139,6 +134,36 @@ public class ServerActivity extends Activity {
         });
     }
 
+    private void startServer()
+    {
+        textViewServername.setEnabled(false);
+
+        serverController = new ServerController(textViewServername.getText().toString());
+        listenerThread = new ListenerThread(textViewServername.getText().toString(), serverController, handler);
+        // start server
+        parentThread = new Thread(listenerThread);
+        parentThread.start();
+
+        clientThread = new ClientThread(NetworkHelper.getIPAddress(), NetworkHelper.getPort(), textViewServername.getText().toString(), playerName, handler, true);
+        parentClientThread = new Thread(clientThread);
+        parentClientThread.start();
+    }
+
+    private void stopServer()
+    {
+        textViewServername.setEnabled(true);
+        switchStartStopServer.setChecked(false);
+
+        if (parentThread != null && parentThread.isAlive() && listenerThread != null) {
+            listenerThread.shutdown();
+        }
+
+        if (parentClientThread != null && parentClientThread.isAlive() && clientThread != null) {
+            clientThread.shutdown();
+        }
+
+        listViewPlayerAdapter.clear();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -162,13 +187,16 @@ public class ServerActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    // fired by button click
     public void startGame(View view) {
 
-
         if (parentThread != null && parentThread.isAlive() && listenerThread != null) {
-            listenerThread.broadcastCommand(CommunicationCommand.StartGame);
+            listenerThread.broadcastCommand(CommunicationCommand.StartGame, "test");
         }
+    }
 
+    public void ShowGameActivity()
+    {
         Intent intent = new Intent(this, GameActivity.class);
         startActivity(intent);
     }
@@ -176,6 +204,7 @@ public class ServerActivity extends Activity {
     public void addPlayer(Player player) {
         listViewPlayerAdapter.add(player);
         updateEnabledOfStartGameButton();
+        updatePlayersListOnClients();
     }
 
     public void removePlayer(String playerName) {
@@ -189,6 +218,7 @@ public class ServerActivity extends Activity {
 
         listViewPlayerAdapter.remove(playerToRemove);
         updateEnabledOfStartGameButton();
+        updatePlayersListOnClients();
     }
 
     private void updateEnabledOfStartGameButton()
@@ -201,33 +231,10 @@ public class ServerActivity extends Activity {
         }
     }
 
-    private String getIpAddress() {
-        String ip = "";
-        try {
-            Enumeration<NetworkInterface> enumNetworkInterfaces = NetworkInterface
-                    .getNetworkInterfaces();
-            while (enumNetworkInterfaces.hasMoreElements()) {
-                NetworkInterface networkInterface = enumNetworkInterfaces
-                        .nextElement();
-                Enumeration<InetAddress> enumInetAddress = networkInterface
-                        .getInetAddresses();
-                while (enumInetAddress.hasMoreElements()) {
-                    InetAddress inetAddress = enumInetAddress.nextElement();
-
-                    if (inetAddress.isSiteLocalAddress()) {
-                        ip += inetAddress.getHostAddress();
-                    }
-
-                }
-
-            }
-
-        } catch (SocketException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            ip += "Something Wrong! " + e.toString() + "\n";
+    private void updatePlayersListOnClients()
+    {
+        if (parentThread != null && parentThread.isAlive() && listenerThread != null) {
+            listenerThread.broadcastCommand(CommunicationCommand.UpdatePlayers, currentPlayers);
         }
-
-        return ip;
     }
 }

@@ -21,6 +21,11 @@ public class MainActivity extends Activity {
     private Button btnServer;
     private Button btnClient;
 
+    public void testGameActivity (View view){
+        Intent intent = new Intent(this, GameActivity.class );
+        startActivity(intent);
+    }
+
     public void startClientActivity(View view){
         Intent client= new Intent(this, ClientActivity.class);
         client.putExtra("PlayerName", etNickname.getText().toString());

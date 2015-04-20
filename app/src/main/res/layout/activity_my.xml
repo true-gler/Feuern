@@ -42,7 +42,7 @@
         android:layout_marginTop="47dp"
         android:layout_alignRight="@+id/btnClient"
         android:layout_alignEnd="@+id/btnClient"
-        android:onClick="exitApplication" />
+        android:onClick="testGameActivity" />
 
     <EditText
         android:layout_width="wrap_content"

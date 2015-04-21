@@ -73,7 +73,7 @@ public class ClientActivity extends Activity {
             etIPAddress.setEnabled(false);
             btnConnectDisconnect.setEnabled(false);
 
-            clientThread = new ClientThread(NetworkHelper.getIPAddress(), NetworkHelper.getPort(), etServerName.getText().toString(), playerName, uiHandler, false);
+            clientThread = new ClientThread(etIPAddress.getText().toString(), NetworkHelper.getPort(), etServerName.getText().toString(), playerName, uiHandler, false);
             parentClientThread = new Thread(clientThread);
             parentClientThread.start();
         }

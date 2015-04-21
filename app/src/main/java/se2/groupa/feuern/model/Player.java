@@ -66,7 +66,7 @@ public class Player implements Observer, Comparable<Player>, Serializable {
         if (cards[0].getNumber() == cards[1].getNumber() &&
                 cards[0].getNumber() == cards[2].getNumber() &&
                 cards[1].getNumber() == cards[2].getNumber()) {
-            return 31.5;
+            return 30.5;
         }
 
         //count points from cards with same color

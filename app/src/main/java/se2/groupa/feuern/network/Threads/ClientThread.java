@@ -128,7 +128,7 @@ public class ClientThread implements Runnable {
                 output.close();
             if (clientSocket != null)
                 clientSocket.close();
-        } catch (ConnectException e) {
+        } catch (Exception e) {
             e.printStackTrace();
 
             Message msg = clientUiHandler.obtainMessage();
@@ -143,21 +143,18 @@ public class ClientThread implements Runnable {
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                 }
-                Message m = clientUiHandler.obtainMessage();
-                m.what = Operations.StopServer.getValue();
-                m.obj = null;
-                clientUiHandler.sendMessage(m);
+                msg = clientUiHandler.obtainMessage();
+                msg.what = Operations.StopServer.getValue();
+                msg.obj = null;
+                clientUiHandler.sendMessage(msg);
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-
-            Message msg = clientUiHandler.obtainMessage();
-            msg.what = Operations.MakeToast.getValue();
-            msg.obj = e.getMessage();
-            clientUiHandler.sendMessage(msg);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            else
+            {
+                msg = clientUiHandler.obtainMessage();
+                msg.what = Operations.SetDisconnected.getValue();
+                msg.obj = null;
+                clientUiHandler.sendMessage(msg);
+            }
         }
     }
 

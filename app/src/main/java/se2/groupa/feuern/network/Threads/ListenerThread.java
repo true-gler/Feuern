@@ -62,7 +62,7 @@ public class ListenerThread implements Runnable {
                     redir add tcp:8888:8888
                     quit
 
-                connect to server:
+                connect to server:t
                     telnet localhost 8888
                 */
 

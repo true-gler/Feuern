@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -66,9 +67,9 @@ public class ClientActivity extends Activity {
         initializeUiHandler();
     }
 
-    public void connectDisconnectServer()
+    public void connectDisconnectServer(View view)
     {
-        if (btnConnectDisconnect.getText().toString().toLowerCase() == "connect") {
+        if (btnConnectDisconnect.getText().toString().toLowerCase().equals("connect")) {
             etServerName.setEnabled(false);
             etIPAddress.setEnabled(false);
             btnConnectDisconnect.setEnabled(false);
@@ -94,7 +95,7 @@ public class ClientActivity extends Activity {
         btnConnectDisconnect.setText("Disconnect");
         btnConnectDisconnect.setEnabled(true);
 
-        Toast.makeText(this, "Successfully connected", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
     }
 
     public void serverDisconnected()
@@ -104,7 +105,7 @@ public class ClientActivity extends Activity {
         btnConnectDisconnect.setText("Connect");
         btnConnectDisconnect.setEnabled(true);
 
-        Toast.makeText(this, "Successfully disconnected", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Disconnected", Toast.LENGTH_SHORT).show();
     }
 
     public void updateServerPlayers(ArrayList<Player> players)
@@ -194,6 +195,9 @@ public class ClientActivity extends Activity {
 
                 if (msg.what == Operations.SetConnected.getValue()) {
                     serverConnected();
+                }
+                else if (msg.what == Operations.SetDisconnected.getValue()) {
+                    serverDisconnected();
                 }
                 else if (msg.what == Operations.UpdatePlayers.getValue()) {
                     if ((ArrayList<Player>) msg.obj != null) {

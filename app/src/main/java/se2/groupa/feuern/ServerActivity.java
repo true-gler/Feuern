@@ -62,6 +62,7 @@ public class ServerActivity extends Activity {
         tvServerIpAddress.setText("Share your IP: " + NetworkHelper.getIPAddress());
 
         currentPlayers = new ArrayList<Player>();
+        currentPlayers.add(new Player("TestUser"));
         listViewPlayerAdapter = new PlayerAdapter(this, currentPlayers);
         listViewPlayers.setAdapter(listViewPlayerAdapter);
 

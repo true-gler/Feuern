@@ -21,6 +21,10 @@ public class GameController {
 
     }
 
+    public void setGamestate (GameState gameState){
+        this.gamestate = gameState;
+    }
+
     public GameState getGameState() {
         return this.gamestate;
     }

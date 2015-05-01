@@ -14,6 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import se2.groupa.feuern.controller.GameController;
 import se2.groupa.feuern.model.Card;
+import se2.groupa.feuern.model.GameState;
 import se2.groupa.feuern.model.Player;
 
 /**
@@ -48,6 +49,7 @@ public class GameActivity extends Activity {
     protected boolean stop;
     protected int stopPosition;
     protected double cardPoints;
+    protected Player currentPlayer;
 
 
 
@@ -67,6 +69,66 @@ public class GameActivity extends Activity {
 
 
 
+    public GameState broadcastGameState(){
+        return this.gameController.getGameState();
+    }
+
+
+    public void updateUI(GameState gameState){
+
+
+        this.gameController.setGamestate(gameState);
+
+        TextView img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
+        TextView img_nextTurnPlayer = (TextView) findViewById(R.id.TextViewNextTurnPlayer);
+        ImageButton btn_publicCardsRight = (ImageButton) findViewById(R.id.publicCardsRight);
+        ImageButton btn_publicCardsMiddle = (ImageButton) findViewById(R.id.publicCardsMiddle);
+        ImageButton btn_publicCardsLeft = (ImageButton) findViewById(R.id.publicCardsLeft);
+        ImageButton btn_ownCardsRight = (ImageButton) findViewById(R.id.ownCardsRight);
+        ImageButton btn_ownCardsMiddle = (ImageButton) findViewById(R.id.ownCardsMiddle);
+        ImageButton btn_ownCardsLeft = (ImageButton) findViewById(R.id.ownCardsLeft);
+        Button btn_next = (Button) findViewById(R.id.buttonNext);
+        TextView img_points = (TextView) findViewById(R.id.textView_points);
+
+        if(this.gameController.getGameState().getNowTurnPlayer().getName().equals(this.currentPlayer.getName())){
+
+            btn_ownCardsRight.setVisibility(View.VISIBLE);
+            btn_ownCardsMiddle.setVisibility(View.VISIBLE);
+            btn_ownCardsLeft.setVisibility(View.VISIBLE);
+            btn_publicCardsRight.setVisibility(View.VISIBLE);
+            btn_publicCardsMiddle.setVisibility(View.VISIBLE);
+            btn_publicCardsLeft.setVisibility(View.VISIBLE);
+            img_points.setVisibility(View.VISIBLE);
+            btn_publicCardsRight.setClickable(true);
+            btn_publicCardsMiddle.setClickable(true);
+            btn_publicCardsLeft.setClickable(true);
+            btn_ownCardsRight.setClickable(true);
+            btn_ownCardsMiddle.setClickable(true);
+            btn_ownCardsLeft.setClickable(true);
+            btn_next.setClickable(true);
+        }
+        else{
+            btn_ownCardsRight.setVisibility(View.VISIBLE);
+            btn_ownCardsMiddle.setVisibility(View.VISIBLE);
+            btn_ownCardsLeft.setVisibility(View.VISIBLE);
+            btn_publicCardsRight.setVisibility(View.VISIBLE);
+            btn_publicCardsMiddle.setVisibility(View.VISIBLE);
+            btn_publicCardsLeft.setVisibility(View.VISIBLE);
+            img_points.setVisibility(View.VISIBLE);
+            btn_publicCardsRight.setClickable(false);
+            btn_publicCardsMiddle.setClickable(false);
+            btn_publicCardsLeft.setClickable(false);
+            btn_ownCardsRight.setClickable(false);
+            btn_ownCardsMiddle.setClickable(false);
+            btn_ownCardsLeft.setClickable(false);
+            btn_next.setClickable(false);
+
+        }
+        updateButtons();
+
+    }
+
+
     public void updateButtons(){
 
         TextView img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
@@ -83,9 +145,11 @@ public class GameActivity extends Activity {
         img_nowTurnPlayer.setText(gameController.getGameState().getNowTurnPlayer().getName());
         img_nextTurnPlayer.setText(gameController.getGameState().getNextTurnPlayer().getName());
 
-        btn_ownCardsRight.setImageResource(gameController.getGameState().getNowTurnPlayer().getCards()[0].getDrawable());
-        btn_ownCardsMiddle.setImageResource(gameController.getGameState().getNowTurnPlayer().getCards()[1].getDrawable());
-        btn_ownCardsLeft.setImageResource(gameController.getGameState().getNowTurnPlayer().getCards()[2].getDrawable());
+        if(this.gameController.getGameState().getNowTurnPlayer().getName().equals(this.currentPlayer.getName())) {
+            btn_ownCardsRight.setImageResource(gameController.getGameState().getNowTurnPlayer().getCards()[0].getDrawable());
+            btn_ownCardsMiddle.setImageResource(gameController.getGameState().getNowTurnPlayer().getCards()[1].getDrawable());
+            btn_ownCardsLeft.setImageResource(gameController.getGameState().getNowTurnPlayer().getCards()[2].getDrawable());
+        }
 
         btn_publicCardsRight.setImageResource(gameController.getGameState().getPublicCards()[0].getDrawable());
         btn_publicCardsMiddle.setImageResource(gameController.getGameState().getPublicCards()[1].getDrawable());
@@ -225,6 +289,7 @@ public class GameActivity extends Activity {
             btn_ownCardsLeft.setClickable(false);
             btn_next.setClickable(false);
             textView_GameActivity.setClickable(true);
+            broadcastGameState();
 
         }
         else {
@@ -232,6 +297,7 @@ public class GameActivity extends Activity {
             moveDone = false;
             updateButtons();
             gameController.getGameState().incCounter();
+            broadcastGameState();
         }
     }
 
@@ -272,6 +338,7 @@ public class GameActivity extends Activity {
         for (int i = 1; i <= number; i++) {
             players.add(new Player("player" + i));
         }
+
         gameController = new GameController(players);
         FeuernHelper.gameController = this.gameController;
         firstDeal();

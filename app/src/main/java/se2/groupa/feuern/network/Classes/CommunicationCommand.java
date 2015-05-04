@@ -8,6 +8,9 @@ public enum CommunicationCommand
     StartGame,
     UpdatePlayers,
     Help,
+    ServerShutdown,
+    ReturnGameStateToServer,
+    UpdateGameState,
     Bye,
     Quit
 }

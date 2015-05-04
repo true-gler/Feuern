@@ -8,7 +8,8 @@ public enum Operations {
     UpdatePlayers(5),
     MakeToast(6),
     StopServer(7),
-    SetDisconnected(8);
+    SetDisconnected(8),
+    UpdateGameState(9);
 
     private int value;
 

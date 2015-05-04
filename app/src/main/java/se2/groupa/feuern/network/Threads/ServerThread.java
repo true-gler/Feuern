@@ -63,6 +63,10 @@ public class ServerThread implements Runnable {
                     {
                         isRunning = false;
                     }
+                    else if (read.getMessage().toLowerCase().equals(CommunicationCommand.ReturnGameStateToServer.toString().toLowerCase()))
+                    {
+                        ListenerThread.broadcastCommand(CommunicationCommand.UpdateGameState, read.getParameter());
+                    }
                     else if (read.getMessage().toLowerCase().equals(CommunicationCommand.GetServername.toString().toLowerCase()))
                     {
                         output.writeObject(new NetworkMessage(NetworkMessage.Status.OK, serverName, null));
@@ -101,7 +105,7 @@ public class ServerThread implements Runnable {
                             }
                         }
                     }
-                    else if (read.getMessage().toLowerCase().equals(CommunicationCommand.Unregister.toString().toLowerCase()))
+                    else if (read.getMessage().toLowerCase().startsWith(CommunicationCommand.Unregister.toString().toLowerCase()))
                     {
                         if (currentPlayerName == null || currentPlayerName.isEmpty()) {
                             output.writeObject(new NetworkMessage(NetworkMessage.Status.ERROR, "you have not been registered yet", null));
@@ -114,7 +118,6 @@ public class ServerThread implements Runnable {
                     else if (read.getMessage().toLowerCase().equals(CommunicationCommand.Bye.toString().toLowerCase()) || read.getMessage().toLowerCase().equals(CommunicationCommand.Quit.toString().toLowerCase()))
                     {
                         unregister(true);
-                        isRunning = false;
                         output.writeObject(new NetworkMessage(NetworkMessage.Status.OK, "Bye", null));
                     }
                     else if (read.getMessage().toLowerCase().equals(CommunicationCommand.Help.toString().toLowerCase()) || read.equals("?"))
@@ -165,6 +168,8 @@ public class ServerThread implements Runnable {
 
     private void unregister(boolean isSuppressed)
     {
+        isRunning = false;
+
         try {
             if (currentPlayerName != null && !currentPlayerName.isEmpty()) {
                 if (serverController.deletePlayer(currentPlayerName)) {
@@ -201,7 +206,7 @@ public class ServerThread implements Runnable {
 
         try {
             if (output != null) {
-                output.writeObject(new NetworkMessage(NetworkMessage.Status.INFO, "Server has been closed", null));
+                output.writeObject(new NetworkMessage(NetworkMessage.Status.INFO, CommunicationCommand.ServerShutdown.toString(), null));
                 output.flush();
             }
 

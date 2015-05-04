@@ -3,9 +3,11 @@ package se2.groupa.feuern.network.threads;
 import android.os.Handler;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
 import se2.groupa.feuern.controller.ServerController;
 import se2.groupa.feuern.network.classes.CommunicationCommand;
@@ -19,13 +21,13 @@ import se2.groupa.feuern.network.classes.NetworkHelper;
  *  - Holds a list of all connected clients
  *      --> used for broadcasting commands
 */
-public class ListenerThread implements Runnable {
+public class ListenerThread implements Runnable, Serializable {
 
 
     private String servername;
     private ServerSocket serverSocket;
     private static final int SERVERPORT = NetworkHelper.getPort();
-    private ArrayList<ServerThread> serverThreads;
+    private static ArrayList<ServerThread> serverThreads;
     private ServerController serverController;
     private Handler uiHandler;
     private boolean isListening;
@@ -34,9 +36,8 @@ public class ListenerThread implements Runnable {
 
         this.servername = serverName;
         this.serverThreads = new ArrayList<ServerThread>();
-        this.serverController = serverController;
         this.uiHandler = uiHandler;
-        this.serverSocket = serverSocket;
+        this.serverController = serverController;
     }
 
     public void run() {
@@ -103,7 +104,7 @@ public class ListenerThread implements Runnable {
         }
     }
 
-    public void broadcastCommand(CommunicationCommand command, Object parameter)
+    public static void broadcastCommand(CommunicationCommand command, Object parameter)
     {
         for (ServerThread st : serverThreads)
         {

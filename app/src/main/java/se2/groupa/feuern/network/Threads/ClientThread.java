@@ -6,6 +6,7 @@ import android.os.Message;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.ConnectException;
 import java.net.Socket;
 
@@ -18,7 +19,7 @@ import se2.groupa.feuern.network.classes.Operations;
  *
  * One instance of this thread will run on each client (also on that client where the server is hosted)
  */
-public class ClientThread implements Runnable {
+public class ClientThread implements Runnable, Serializable {
 
     private String serverName;
     private Socket clientSocket;
@@ -41,6 +42,11 @@ public class ClientThread implements Runnable {
         this.clientUiHandler = clientUiHandler;
         this.currentPlayerName = currentPlayerName;
         this.isAlsoServer = isAlsoServer;
+    }
+
+    public void updateUIHandler(Handler clientUiHandler)
+    {
+        this.clientUiHandler = clientUiHandler;
     }
 
     @Override
@@ -89,17 +95,36 @@ public class ClientThread implements Runnable {
                             if (read == null) // server is unavailable
                             {
                                 isRunning = false;
+                            } else if (read.toString().startsWith("[" + NetworkMessage.Status.REQUEST.toString() + "] " + CommunicationCommand.UpdateGameState.toString())) {
+                                Message msg = clientUiHandler.obtainMessage();
+                                msg.what = Operations.UpdateGameState.getValue();
+                                msg.obj = read.getParameter();
+                                clientUiHandler.sendMessage(msg);
                             } else if (read.toString().startsWith("[" + NetworkMessage.Status.REQUEST.toString() + "] " + CommunicationCommand.StartGame.toString())) {
                                 Message msg = clientUiHandler.obtainMessage();
                                 msg.what = Operations.StartGame.getValue();
-                                msg.obj = null;
+                                msg.obj = read.getParameter();
                                 clientUiHandler.sendMessage(msg);
                             } else if (read.toString().startsWith("[" + NetworkMessage.Status.REQUEST.toString() + "] " + CommunicationCommand.UpdatePlayers.toString())) {
                                 Message msg = clientUiHandler.obtainMessage();
                                 msg.what = Operations.UpdatePlayers.getValue();
                                 msg.obj = read.getParameter();
                                 clientUiHandler.sendMessage(msg);
+                            } else if (read.toString().startsWith("[" + NetworkMessage.Status.REQUEST.toString() + "] " + CommunicationCommand.UpdatePlayers.toString())) {
+                                Message msg = clientUiHandler.obtainMessage();
+                                msg.what = Operations.UpdatePlayers.getValue();
+                                msg.obj = read.getParameter();
+                                clientUiHandler.sendMessage(msg);
+                            } else if (read.toString().startsWith("[" + NetworkMessage.Status.INFO.toString() + "] " + CommunicationCommand.ServerShutdown.toString())) {
+                                Message msg = clientUiHandler.obtainMessage();
+                                msg.what = Operations.SetDisconnected.getValue();
+                                msg.obj = read.getParameter();
+                                clientUiHandler.sendMessage(msg);
                             } else { // bad command
+                                Message msg = clientUiHandler.obtainMessage();
+                                msg.what = Operations.MakeToast.getValue();
+                                msg.obj = read.getMessage();
+                                clientUiHandler.sendMessage(msg);
 
                             }
                         } catch (Exception e){
@@ -162,6 +187,14 @@ public class ClientThread implements Runnable {
         isRunning = false;
 
         try {
+
+            // unregister player
+            if (output != null)
+            {
+                output.writeObject(new NetworkMessage(NetworkMessage.Status.REQUEST, CommunicationCommand.Unregister.toString(), null));
+                output.flush();
+            }
+
             if (clientSocket != null)
                 clientSocket.close();
         } catch (Exception e) {

@@ -15,9 +15,9 @@ public class GameController {
     private GameState gamestate;
 
 
-    public GameController(ArrayList<Player> players) {
+    public GameController(GameState gameState) {
 
-        this.gamestate = new GameState(players);
+        this.gamestate = gameState;
 
     }
 

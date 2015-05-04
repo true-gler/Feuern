@@ -3,6 +3,8 @@ package se2.groupa.feuern;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,12 +12,19 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+
+import se2.groupa.feuern.controller.ApplicationController;
 import se2.groupa.feuern.controller.GameController;
 import se2.groupa.feuern.model.Card;
 import se2.groupa.feuern.model.GameState;
 import se2.groupa.feuern.model.Player;
+import se2.groupa.feuern.network.classes.CommunicationCommand;
+import se2.groupa.feuern.network.classes.Operations;
+import se2.groupa.feuern.network.threads.ClientThread;
+import se2.groupa.feuern.network.threads.ListenerThread;
 
 /**
  * Displays your own hand when its your turn and let you choose to change one card or to
@@ -51,6 +60,9 @@ public class GameActivity extends Activity {
     protected double cardPoints;
     protected Player currentPlayer;
 
+    protected ListenerThread listenerThread;
+    protected ClientThread clientThread;
+    protected Handler uiHandler;
 
 
     public Card getOwnCardSwitch(){
@@ -69,8 +81,8 @@ public class GameActivity extends Activity {
 
 
 
-    public GameState broadcastGameState(){
-        return this.gameController.getGameState();
+    public void returnGameStateToServer() {
+        clientThread.executeCommand(CommunicationCommand.ReturnGameStateToServer, gameController.getGameState());
     }
 
 
@@ -289,7 +301,7 @@ public class GameActivity extends Activity {
             btn_ownCardsLeft.setClickable(false);
             btn_next.setClickable(false);
             textView_GameActivity.setClickable(true);
-            broadcastGameState();
+            returnGameStateToServer();
 
         }
         else {
@@ -297,7 +309,7 @@ public class GameActivity extends Activity {
             moveDone = false;
             updateButtons();
             gameController.getGameState().incCounter();
-            broadcastGameState();
+            returnGameStateToServer();
         }
     }
 
@@ -321,6 +333,7 @@ public class GameActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+
         TextView img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
         TextView img_nextTurnPlayer = (TextView) findViewById(R.id.TextViewNextTurnPlayer);
         ImageButton btn_publicCardsRight = (ImageButton) findViewById(R.id.publicCardsRight);
@@ -331,17 +344,21 @@ public class GameActivity extends Activity {
         ImageButton btn_ownCardsLeft = (ImageButton) findViewById(R.id.ownCardsLeft);
         Button btn_next = (Button) findViewById(R.id.buttonNext);
 
-        //Hier werden jetzt zu Testzwecken einfach vier Spieler-Objekte initialisiert
-        int number = 4;
+        String playerName = getIntent().getStringExtra("playerName");
+        gameController = new GameController((GameState) getIntent().getSerializableExtra("gameState"));
 
-        ArrayList<Player> players = new ArrayList<Player>(number);
-        for (int i = 1; i <= number; i++) {
-            players.add(new Player("player" + i));
-        }
-
-        gameController = new GameController(players);
+        currentPlayer = gameController.getGameState().getPlayerByName(playerName);
         FeuernHelper.gameController = this.gameController;
+
+        // if listenerThread == null then client else server
+        listenerThread = ApplicationController.getListenerThread();
+        clientThread = ApplicationController.getClientThread();
+
+
+        initializeUiHandler();
+
         firstDeal();
+
 
 
         btn_publicCardsRight.setOnLongClickListener(new View.OnLongClickListener() {
@@ -471,4 +488,29 @@ public class GameActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void initializeUiHandler()
+    {
+        uiHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+
+                if (msg.what == Operations.UpdateGameState.getValue()) {
+                    updateGameState((GameState) msg.obj);
+                }
+                else if (msg.what == Operations.MakeToast.getValue()) {
+                    if ((String)msg.obj != null)
+                        Toast.makeText(getApplicationContext(), (String)msg.obj, Toast.LENGTH_SHORT).show();
+                }
+
+                super.handleMessage(msg);
+            }
+        };
+
+        clientThread.updateUIHandler(uiHandler);
+    }
+
+    private void updateGameState(GameState gameState)
+    {
+        // TODO: update UI according to new gamestate object
+    }
 }

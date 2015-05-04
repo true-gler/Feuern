@@ -18,6 +18,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import se2.groupa.feuern.adapters.PlayerAdapter;
+import se2.groupa.feuern.controller.ApplicationController;
+import se2.groupa.feuern.model.GameState;
 import se2.groupa.feuern.model.Player;
 import se2.groupa.feuern.network.threads.ClientThread;
 import se2.groupa.feuern.network.classes.NetworkHelper;
@@ -209,7 +211,7 @@ public class ClientActivity extends Activity {
                         Toast.makeText(getApplicationContext(), (String)msg.obj, Toast.LENGTH_SHORT).show();
                 }
                 else if (msg.what == Operations.StartGame.getValue()) {
-                    ShowGameActivity();
+                    ShowGameActivity((GameState)msg.obj);
                 }
 
                 super.handleMessage(msg);
@@ -217,9 +219,14 @@ public class ClientActivity extends Activity {
         };
     }
 
-    public void ShowGameActivity()
+    public void ShowGameActivity(GameState gameState)
     {
         Intent intent = new Intent(this, GameActivity.class);
+
+        ApplicationController.setClientThread(clientThread);
+        intent.putExtra("gameState", gameState);
+        intent.putExtra("playerName", playerName);
+
         startActivity(intent);
     }
 }

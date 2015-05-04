@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +21,9 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import se2.groupa.feuern.adapters.PlayerAdapter;
+import se2.groupa.feuern.controller.ApplicationController;
 import se2.groupa.feuern.controller.ServerController;
+import se2.groupa.feuern.model.GameState;
 import se2.groupa.feuern.model.Player;
 import se2.groupa.feuern.network.threads.ClientThread;
 import se2.groupa.feuern.network.classes.CommunicationCommand;
@@ -48,6 +49,8 @@ public class ServerActivity extends Activity {
     private ListenerThread listenerThread;
     private Thread parentClientThread = null;
     private ClientThread clientThread;
+
+    private GameState gameState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +139,7 @@ public class ServerActivity extends Activity {
 
     private void startServer()
     {
+        // TODO: move ListenerThread into ServerController? or can be passed ListenerThread to GameActivity
         textViewServername.setEnabled(false);
 
         serverController = new ServerController(textViewServername.getText().toString());
@@ -154,12 +158,12 @@ public class ServerActivity extends Activity {
         textViewServername.setEnabled(true);
         switchStartStopServer.setChecked(false);
 
-        if (parentThread != null && parentThread.isAlive() && listenerThread != null) {
-            listenerThread.shutdown();
-        }
-
         if (parentClientThread != null && parentClientThread.isAlive() && clientThread != null) {
             clientThread.shutdown();
+        }
+
+        if (parentThread != null && parentThread.isAlive() && listenerThread != null) {
+            listenerThread.shutdown();
         }
 
         listViewPlayerAdapter.clear();
@@ -191,13 +195,23 @@ public class ServerActivity extends Activity {
     public void startGame(View view) {
 
         if (parentThread != null && parentThread.isAlive() && listenerThread != null) {
-            listenerThread.broadcastCommand(CommunicationCommand.StartGame, "test");
+            gameState = new GameState(currentPlayers);
+            gameState.setNowTurnPlayer(currentPlayers.get(0));
+            gameState.setNextTurnPlayer(currentPlayers.get(1));
+
+            listenerThread.broadcastCommand(CommunicationCommand.StartGame, gameState);
         }
     }
 
     public void ShowGameActivity()
     {
         Intent intent = new Intent(this, GameActivity.class);
+
+        ApplicationController.setListenerThread(listenerThread);
+        ApplicationController.setClientThread(clientThread);
+        intent.putExtra("gameState", gameState);
+        intent.putExtra("playerName", playerName);
+
         startActivity(intent);
     }
 

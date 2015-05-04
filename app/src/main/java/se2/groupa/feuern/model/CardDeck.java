@@ -1,5 +1,6 @@
 package se2.groupa.feuern.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import se2.groupa.feuern.R;
@@ -7,7 +8,7 @@ import se2.groupa.feuern.R;
 /**
  * Created by Taurer on 30.03.2015.
  */
-public class CardDeck {
+public class CardDeck implements Serializable {
     private  ArrayList<Card> cards;
     private  ArrayList<Card> stackCards;
 

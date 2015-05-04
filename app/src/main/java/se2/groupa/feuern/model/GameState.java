@@ -72,7 +72,18 @@ public class GameState implements Serializable {
         return this.publicCards;
     }
 
+    public Player getPlayerByName(String playerName)
+    {
+        Player ret = null;
 
+        for (Player p : getPlayers())
+        {
+            if (p.getName().toLowerCase().equals(playerName.toLowerCase()))
+                ret = p;
+        }
+
+        return ret;
+    }
 
 
 }

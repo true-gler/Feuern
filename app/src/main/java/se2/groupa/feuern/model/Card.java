@@ -1,9 +1,11 @@
 package se2.groupa.feuern.model;
 
+import java.io.Serializable;
+
 /**
  * Created by Taurer on 30.03.2015.
  */
-public class Card {
+public class Card implements Serializable {
 
     private int color;
     private int number;

@@ -86,61 +86,6 @@ public class GameActivity extends Activity {
     }
 
 
-    public void updateUI(GameState gameState){
-
-
-        this.gameController.setGamestate(gameState);
-
-        TextView img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
-        TextView img_nextTurnPlayer = (TextView) findViewById(R.id.TextViewNextTurnPlayer);
-        ImageButton btn_publicCardsRight = (ImageButton) findViewById(R.id.publicCardsRight);
-        ImageButton btn_publicCardsMiddle = (ImageButton) findViewById(R.id.publicCardsMiddle);
-        ImageButton btn_publicCardsLeft = (ImageButton) findViewById(R.id.publicCardsLeft);
-        ImageButton btn_ownCardsRight = (ImageButton) findViewById(R.id.ownCardsRight);
-        ImageButton btn_ownCardsMiddle = (ImageButton) findViewById(R.id.ownCardsMiddle);
-        ImageButton btn_ownCardsLeft = (ImageButton) findViewById(R.id.ownCardsLeft);
-        Button btn_next = (Button) findViewById(R.id.buttonNext);
-        TextView img_points = (TextView) findViewById(R.id.textView_points);
-
-        if(this.gameController.getGameState().getNowTurnPlayer().getName().equals(this.currentPlayer.getName())){
-
-            btn_ownCardsRight.setVisibility(View.VISIBLE);
-            btn_ownCardsMiddle.setVisibility(View.VISIBLE);
-            btn_ownCardsLeft.setVisibility(View.VISIBLE);
-            btn_publicCardsRight.setVisibility(View.VISIBLE);
-            btn_publicCardsMiddle.setVisibility(View.VISIBLE);
-            btn_publicCardsLeft.setVisibility(View.VISIBLE);
-            img_points.setVisibility(View.VISIBLE);
-            btn_publicCardsRight.setClickable(true);
-            btn_publicCardsMiddle.setClickable(true);
-            btn_publicCardsLeft.setClickable(true);
-            btn_ownCardsRight.setClickable(true);
-            btn_ownCardsMiddle.setClickable(true);
-            btn_ownCardsLeft.setClickable(true);
-            btn_next.setClickable(true);
-        }
-        else{
-            btn_ownCardsRight.setVisibility(View.VISIBLE);
-            btn_ownCardsMiddle.setVisibility(View.VISIBLE);
-            btn_ownCardsLeft.setVisibility(View.VISIBLE);
-            btn_publicCardsRight.setVisibility(View.VISIBLE);
-            btn_publicCardsMiddle.setVisibility(View.VISIBLE);
-            btn_publicCardsLeft.setVisibility(View.VISIBLE);
-            img_points.setVisibility(View.VISIBLE);
-            btn_publicCardsRight.setClickable(false);
-            btn_publicCardsMiddle.setClickable(false);
-            btn_publicCardsLeft.setClickable(false);
-            btn_ownCardsRight.setClickable(false);
-            btn_ownCardsMiddle.setClickable(false);
-            btn_ownCardsLeft.setClickable(false);
-            btn_next.setClickable(false);
-
-        }
-        updateButtons();
-
-    }
-
-
     public void updateButtons(){
 
         TextView img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
@@ -428,6 +373,7 @@ public class GameActivity extends Activity {
     }
 
     public void KeepCardsNo(View v){
+
         TextView swapCards = (TextView) findViewById(R.id.textView_wantToKeepCards);
         TextView img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
         TextView img_nextTurnPlayer = (TextView) findViewById(R.id.TextViewNextTurnPlayer);
@@ -512,5 +458,54 @@ public class GameActivity extends Activity {
     private void updateGameState(GameState gameState)
     {
         // TODO: update UI according to new gamestate object
+
+        this.gameController.setGamestate(gameState);
+
+        TextView img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
+        TextView img_nextTurnPlayer = (TextView) findViewById(R.id.TextViewNextTurnPlayer);
+        ImageButton btn_publicCardsRight = (ImageButton) findViewById(R.id.publicCardsRight);
+        ImageButton btn_publicCardsMiddle = (ImageButton) findViewById(R.id.publicCardsMiddle);
+        ImageButton btn_publicCardsLeft = (ImageButton) findViewById(R.id.publicCardsLeft);
+        ImageButton btn_ownCardsRight = (ImageButton) findViewById(R.id.ownCardsRight);
+        ImageButton btn_ownCardsMiddle = (ImageButton) findViewById(R.id.ownCardsMiddle);
+        ImageButton btn_ownCardsLeft = (ImageButton) findViewById(R.id.ownCardsLeft);
+        Button btn_next = (Button) findViewById(R.id.buttonNext);
+        TextView img_points = (TextView) findViewById(R.id.textView_points);
+
+        if(this.gameController.getGameState().getNowTurnPlayer().getName().equals(this.currentPlayer.getName())){
+
+            btn_ownCardsRight.setVisibility(View.VISIBLE);
+            btn_ownCardsMiddle.setVisibility(View.VISIBLE);
+            btn_ownCardsLeft.setVisibility(View.VISIBLE);
+            btn_publicCardsRight.setVisibility(View.VISIBLE);
+            btn_publicCardsMiddle.setVisibility(View.VISIBLE);
+            btn_publicCardsLeft.setVisibility(View.VISIBLE);
+            img_points.setVisibility(View.VISIBLE);
+            btn_publicCardsRight.setClickable(true);
+            btn_publicCardsMiddle.setClickable(true);
+            btn_publicCardsLeft.setClickable(true);
+            btn_ownCardsRight.setClickable(true);
+            btn_ownCardsMiddle.setClickable(true);
+            btn_ownCardsLeft.setClickable(true);
+            btn_next.setClickable(true);
+        }
+        else{
+            btn_ownCardsRight.setVisibility(View.VISIBLE);
+            btn_ownCardsMiddle.setVisibility(View.VISIBLE);
+            btn_ownCardsLeft.setVisibility(View.VISIBLE);
+            btn_publicCardsRight.setVisibility(View.VISIBLE);
+            btn_publicCardsMiddle.setVisibility(View.VISIBLE);
+            btn_publicCardsLeft.setVisibility(View.VISIBLE);
+            img_points.setVisibility(View.VISIBLE);
+            btn_publicCardsRight.setClickable(false);
+            btn_publicCardsMiddle.setClickable(false);
+            btn_publicCardsLeft.setClickable(false);
+            btn_ownCardsRight.setClickable(false);
+            btn_ownCardsMiddle.setClickable(false);
+            btn_ownCardsLeft.setClickable(false);
+            btn_next.setClickable(false);
+
+        }
+        updateButtons();
     }
 }

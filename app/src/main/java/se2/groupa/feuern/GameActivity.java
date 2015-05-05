@@ -458,6 +458,7 @@ public class GameActivity extends Activity {
     private void updateGameState(GameState gameState)
     {
         // TODO: update UI according to new gamestate object
+        // Dies ist ein Kommentar für GItHub
 
         this.gameController.setGamestate(gameState);
 

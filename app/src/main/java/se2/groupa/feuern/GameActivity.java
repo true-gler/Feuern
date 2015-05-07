@@ -116,7 +116,9 @@ public class GameActivity extends Activity {
         img_points.setText(""+cardPoints);
     }
 
+
     public void firstDeal(){
+
         TextView img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
         TextView img_nextTurnPlayer = (TextView) findViewById(R.id.TextViewNextTurnPlayer);
         TextView textView_publicCards = (TextView) findViewById(R.id.textViewPublicCards);
@@ -130,7 +132,9 @@ public class GameActivity extends Activity {
         ImageButton btn_ownCardsMiddle = (ImageButton) findViewById(R.id.ownCardsMiddle);
         ImageButton btn_ownCardsLeft = (ImageButton) findViewById(R.id.ownCardsLeft);
         Button btn_next = (Button) findViewById(R.id.buttonNext);
-
+        Button btn_KeepCardsYes = (Button) findViewById(R.id.buttonKeepCardsYes);
+        Button btn_KeepCardsNo = (Button) findViewById(R.id.buttonKeepCardsNo);
+        TextView swapCards = (TextView) findViewById(R.id.textView_wantToKeepCards);
 
         btn_publicCardsLeft.setVisibility(View.INVISIBLE);
         btn_publicCardsMiddle.setVisibility(View.INVISIBLE);
@@ -146,10 +150,25 @@ public class GameActivity extends Activity {
 
         gameController.dealingOutCards();
 
-        btn_ownCardsRight.setImageResource(gameController.getGameState().getNowTurnPlayer().getCards()[0].getDrawable());
-        btn_ownCardsMiddle.setImageResource(gameController.getGameState().getNowTurnPlayer().getCards()[1].getDrawable());
-        btn_ownCardsLeft.setImageResource(gameController.getGameState().getNowTurnPlayer().getCards()[2].getDrawable());
+        if(this.gameController.getGameState().getNowTurnPlayer().getName().equals(this.currentPlayer.getName())){
+            btn_ownCardsRight.setImageResource(gameController.getGameState().getNowTurnPlayer().getCards()[0].getDrawable());
+            btn_ownCardsMiddle.setImageResource(gameController.getGameState().getNowTurnPlayer().getCards()[1].getDrawable());
+            btn_ownCardsLeft.setImageResource(gameController.getGameState().getNowTurnPlayer().getCards()[2].getDrawable());
+        }
+        else{
+            btn_KeepCardsYes.setVisibility(View.INVISIBLE);
+            btn_KeepCardsNo.setVisibility(View.INVISIBLE);
+            swapCards.setVisibility(View.INVISIBLE);
 
+            for (Player i : this.gameController.getGameState().getPlayers()){
+                if(i.getName().equals(currentPlayer.getName())){
+                    btn_ownCardsRight.setImageResource(i.getCards()[0].getDrawable());
+                    btn_ownCardsMiddle.setImageResource(i.getCards()[1].getDrawable());
+                    btn_ownCardsLeft.setImageResource(i.getCards()[2].getDrawable());
+                }
+            }
+
+        }
 
     }
 

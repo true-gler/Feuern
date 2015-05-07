@@ -146,7 +146,9 @@ public class GameActivity extends Activity {
         textView_publicCards.setVisibility(View.INVISIBLE);
         textView_nextPlayerLabel.setVisibility(View.INVISIBLE);
         textView_nowPlayerLabel.setVisibility(View.INVISIBLE);
-
+        btn_ownCardsLeft.setClickable(false);
+        btn_ownCardsRight.setClickable(false);
+        btn_ownCardsMiddle.setClickable(false);
 
         gameController.dealingOutCards();
 
@@ -307,6 +309,9 @@ public class GameActivity extends Activity {
         ImageButton btn_ownCardsMiddle = (ImageButton) findViewById(R.id.ownCardsMiddle);
         ImageButton btn_ownCardsLeft = (ImageButton) findViewById(R.id.ownCardsLeft);
         Button btn_next = (Button) findViewById(R.id.buttonNext);
+        //test
+        RelativeLayout textView_GameActivity = (RelativeLayout) findViewById(R.id.textView_GameActivity);
+        textView_GameActivity.setClickable(false);
 
         String playerName = getIntent().getStringExtra("playerName");
         gameController = new GameController((GameState) getIntent().getSerializableExtra("gameState"));

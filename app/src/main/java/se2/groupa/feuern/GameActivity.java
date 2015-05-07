@@ -394,6 +394,8 @@ public class GameActivity extends Activity {
 
         gameController.KeepCardsFinishDealing();
         updateButtons();
+        returnGameStateToServer();
+
     }
 
     public void KeepCardsNo(View v){
@@ -432,6 +434,7 @@ public class GameActivity extends Activity {
 
         gameController.DontKeepCardsFinishDealing();
         updateButtons();
+        returnGameStateToServer();
     }
 
 

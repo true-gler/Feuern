@@ -88,6 +88,8 @@ public class GameActivity extends Activity {
 
     public void updateButtons(){
 
+        cardPoints = gameController.getGameState().getNowTurnPlayer().getCardPoints();
+
         TextView img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
         TextView img_nextTurnPlayer = (TextView) findViewById(R.id.TextViewNextTurnPlayer);
         ImageButton btn_publicCardsRight = (ImageButton) findViewById(R.id.publicCardsRight);
@@ -106,14 +108,15 @@ public class GameActivity extends Activity {
             btn_ownCardsRight.setImageResource(gameController.getGameState().getNowTurnPlayer().getCards()[0].getDrawable());
             btn_ownCardsMiddle.setImageResource(gameController.getGameState().getNowTurnPlayer().getCards()[1].getDrawable());
             btn_ownCardsLeft.setImageResource(gameController.getGameState().getNowTurnPlayer().getCards()[2].getDrawable());
+            img_points.setText(""+cardPoints);
         }
 
         btn_publicCardsRight.setImageResource(gameController.getGameState().getPublicCards()[0].getDrawable());
         btn_publicCardsMiddle.setImageResource(gameController.getGameState().getPublicCards()[1].getDrawable());
         btn_publicCardsLeft.setImageResource(gameController.getGameState().getPublicCards()[2].getDrawable());
 
-        cardPoints = gameController.getGameState().getNowTurnPlayer().getCardPoints();
-        img_points.setText(""+cardPoints);
+        //cardPoints = gameController.getGameState().getNowTurnPlayer().getCardPoints();
+        //img_points.setText(""+cardPoints);
     }
 
 
@@ -490,6 +493,10 @@ public class GameActivity extends Activity {
 
         TextView img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
         TextView img_nextTurnPlayer = (TextView) findViewById(R.id.TextViewNextTurnPlayer);
+        TextView img_captionnextTurnPlayer = (TextView) findViewById(R.id.textViewCaptionNextTurnPlayer);
+        TextView img_captionnowTurnPlayer = (TextView) findViewById(R.id.textViewCaptionNowTurnPlayer);
+        TextView txt_publicCards = (TextView) findViewById(R.id.textViewPublicCards);
+        TextView txt_ownCards = (TextView) findViewById(R.id.textViewOwnCards);
         ImageButton btn_publicCardsRight = (ImageButton) findViewById(R.id.publicCardsRight);
         ImageButton btn_publicCardsMiddle = (ImageButton) findViewById(R.id.publicCardsMiddle);
         ImageButton btn_publicCardsLeft = (ImageButton) findViewById(R.id.publicCardsLeft);
@@ -500,7 +507,6 @@ public class GameActivity extends Activity {
         TextView img_points = (TextView) findViewById(R.id.textView_points);
 
         if(this.gameController.getGameState().getNowTurnPlayer().getName().equals(this.currentPlayer.getName())){
-
             btn_ownCardsRight.setVisibility(View.VISIBLE);
             btn_ownCardsMiddle.setVisibility(View.VISIBLE);
             btn_ownCardsLeft.setVisibility(View.VISIBLE);
@@ -508,6 +514,13 @@ public class GameActivity extends Activity {
             btn_publicCardsMiddle.setVisibility(View.VISIBLE);
             btn_publicCardsLeft.setVisibility(View.VISIBLE);
             img_points.setVisibility(View.VISIBLE);
+            btn_next.setVisibility(View.VISIBLE);
+            img_nowTurnPlayer.setVisibility(View.VISIBLE);
+            img_nextTurnPlayer.setVisibility(View.VISIBLE);
+            img_captionnextTurnPlayer.setVisibility(View.VISIBLE);
+            img_captionnowTurnPlayer.setVisibility(View.VISIBLE);
+            txt_ownCards.setVisibility(View.VISIBLE);
+            txt_publicCards.setVisibility(View.VISIBLE);
             btn_publicCardsRight.setClickable(true);
             btn_publicCardsMiddle.setClickable(true);
             btn_publicCardsLeft.setClickable(true);
@@ -524,6 +537,12 @@ public class GameActivity extends Activity {
             btn_publicCardsMiddle.setVisibility(View.VISIBLE);
             btn_publicCardsLeft.setVisibility(View.VISIBLE);
             img_points.setVisibility(View.VISIBLE);
+            img_nowTurnPlayer.setVisibility(View.VISIBLE);
+            img_nextTurnPlayer.setVisibility(View.VISIBLE);
+            img_captionnextTurnPlayer.setVisibility(View.VISIBLE);
+            img_captionnowTurnPlayer.setVisibility(View.VISIBLE);
+            txt_ownCards.setVisibility(View.VISIBLE);
+            txt_publicCards.setVisibility(View.VISIBLE);
             btn_publicCardsRight.setClickable(false);
             btn_publicCardsMiddle.setClickable(false);
             btn_publicCardsLeft.setClickable(false);

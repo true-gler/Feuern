@@ -111,9 +111,11 @@ public class GameActivity extends Activity {
             img_points.setText(""+cardPoints);
         }
 
-        btn_publicCardsRight.setImageResource(gameController.getGameState().getPublicCards()[0].getDrawable());
-        btn_publicCardsMiddle.setImageResource(gameController.getGameState().getPublicCards()[1].getDrawable());
-        btn_publicCardsLeft.setImageResource(gameController.getGameState().getPublicCards()[2].getDrawable());
+        if (this.gameController.getGameState().getCounter() != 0){
+            btn_publicCardsRight.setImageResource(gameController.getGameState().getPublicCards()[0].getDrawable());
+            btn_publicCardsMiddle.setImageResource(gameController.getGameState().getPublicCards()[1].getDrawable());
+            btn_publicCardsLeft.setImageResource(gameController.getGameState().getPublicCards()[2].getDrawable());
+        }
 
         //cardPoints = gameController.getGameState().getNowTurnPlayer().getCardPoints();
         //img_points.setText(""+cardPoints);
@@ -154,6 +156,7 @@ public class GameActivity extends Activity {
         btn_ownCardsMiddle.setClickable(false);
 
         gameController.dealingOutCards();
+        returnGameStateToServer();
 
         if(this.gameController.getGameState().getNowTurnPlayer().getName().equals(this.currentPlayer.getName())){
             btn_ownCardsRight.setImageResource(gameController.getGameState().getNowTurnPlayer().getCards()[0].getDrawable());
@@ -325,6 +328,7 @@ public class GameActivity extends Activity {
         // if listenerThread == null then client else server
         listenerThread = ApplicationController.getListenerThread();
         clientThread = ApplicationController.getClientThread();
+
 
 
         initializeUiHandler();

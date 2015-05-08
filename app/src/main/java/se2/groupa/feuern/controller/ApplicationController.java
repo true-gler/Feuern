@@ -16,6 +16,16 @@ public class ApplicationController {
     private static ClientThread clientThread;
     private static ArrayList<ServerThread> serverThreads;
 
+    public static String getPlayerName() {
+        return playerName;
+    }
+
+    public static void setPlayerName(String playerName) {
+        ApplicationController.playerName = playerName;
+    }
+
+    private static String playerName;
+
     public static ListenerThread getListenerThread() {
 
         return listenerThread;

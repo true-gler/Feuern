@@ -173,10 +173,6 @@ public class ServerThread implements Runnable {
         try {
             if (currentPlayerName != null && !currentPlayerName.isEmpty()) {
                 if (serverController.deletePlayer(currentPlayerName)) {
-                    if (!isSuppressed) {
-                        output.writeObject(new NetworkMessage(NetworkMessage.Status.OK, "successfully unregistered", null));
-                        output.flush();
-                    }
 
                     Message msg = uiHandler.obtainMessage();
                     msg.what = Operations.RemovePlayer.getValue();
@@ -184,6 +180,11 @@ public class ServerThread implements Runnable {
                     uiHandler.sendMessage(msg);
 
                     currentPlayerName = null;
+
+                    if (!isSuppressed) {
+                        output.writeObject(new NetworkMessage(NetworkMessage.Status.OK, "successfully unregistered", null));
+                        output.flush();
+                    }
                 } else {
                     if (!isSuppressed) {
                         output.writeObject(new NetworkMessage(NetworkMessage.Status.ERROR, "could not unregister", null));
@@ -191,6 +192,13 @@ public class ServerThread implements Runnable {
                     }
                 }
             }
+
+            if (input != null)
+                input.close();
+            if (output != null)
+                output.close();
+            if (clientSocket != null)
+                clientSocket.close();
         } catch (Exception e) {
             e.printStackTrace();
 

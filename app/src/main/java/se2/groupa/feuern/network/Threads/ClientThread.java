@@ -195,6 +195,10 @@ public class ClientThread implements Runnable, Serializable {
                 output.flush();
             }
 
+            if (input != null)
+                input.close();
+            if (output != null)
+                output.close();
             if (clientSocket != null)
                 clientSocket.close();
         } catch (Exception e) {
@@ -203,6 +207,14 @@ public class ClientThread implements Runnable, Serializable {
             Message msg = clientUiHandler.obtainMessage();
             msg.what = Operations.MakeToast.getValue();
             msg.obj = e.getMessage();
+            clientUiHandler.sendMessage(msg);
+        }
+
+        if (!isAlsoServer)
+        {
+            Message msg = clientUiHandler.obtainMessage();
+            msg.what = Operations.SetDisconnected.getValue();
+            msg.obj = null;
             clientUiHandler.sendMessage(msg);
         }
     }

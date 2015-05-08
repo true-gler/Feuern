@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,6 +50,8 @@ public class ServerActivity extends Activity {
     private ListenerThread listenerThread;
     private Thread parentClientThread = null;
     private ClientThread clientThread;
+
+    private boolean serverIsRunning = false;
 
     private GameState gameState;
 
@@ -151,6 +154,8 @@ public class ServerActivity extends Activity {
         clientThread = new ClientThread(NetworkHelper.getIPAddress(), NetworkHelper.getPort(), textViewServername.getText().toString(), playerName, handler, true);
         parentClientThread = new Thread(clientThread);
         parentClientThread.start();
+
+        serverIsRunning = true;
     }
 
     private void stopServer()
@@ -167,6 +172,7 @@ public class ServerActivity extends Activity {
         }
 
         listViewPlayerAdapter.clear();
+        serverIsRunning = false;
     }
 
     @Override
@@ -250,5 +256,32 @@ public class ServerActivity extends Activity {
         if (parentThread != null && parentThread.isAlive() && listenerThread != null) {
             listenerThread.broadcastCommand(CommunicationCommand.UpdatePlayers, currentPlayers);
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if (keyCode == KeyEvent.KEYCODE_BACK)
+        {
+            if(serverIsRunning){
+
+                Toast.makeText(getApplicationContext(), "You need to stop your server first", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        if(serverIsRunning){
+
+            Toast.makeText(getApplicationContext(), "You need to stop your server first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        super.onBackPressed();
     }
 }

@@ -2,6 +2,7 @@ package se2.groupa.feuern;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import se2.groupa.feuern.controller.ApplicationController;
 
 
 /**
@@ -20,6 +23,7 @@ public class MainActivity extends Activity {
     private EditText etNickname;
     private Button btnServer;
     private Button btnClient;
+    public String playerName;
 
     public void testGameActivity (View view){
         Intent intent = new Intent(this, GameActivity.class );
@@ -27,12 +31,14 @@ public class MainActivity extends Activity {
     }
 
     public void startClientActivity(View view){
+
         Intent client= new Intent(this, ClientActivity.class);
         client.putExtra("PlayerName", etNickname.getText().toString());
         startActivity(client);
     }
 
     public void startServerActivity(View view){
+
         Intent server= new Intent(this, ServerActivity.class);
         server.putExtra("PlayerName", etNickname.getText().toString());
         startActivity(server);
@@ -92,5 +98,21 @@ public class MainActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        etNickname.setText(ApplicationController.getPlayerName());
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        ApplicationController.setPlayerName(etNickname.getText().toString());
     }
 }

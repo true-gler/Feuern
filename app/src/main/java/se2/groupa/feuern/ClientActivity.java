@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -106,6 +107,7 @@ public class ClientActivity extends Activity {
         etIPAddress.setEnabled(true);
         btnConnectDisconnect.setText("Connect");
         btnConnectDisconnect.setEnabled(true);
+        lvServerPlayersAdapter.clear();
 
         Toast.makeText(this, "Disconnected", Toast.LENGTH_SHORT).show();
     }
@@ -228,5 +230,33 @@ public class ClientActivity extends Activity {
         intent.putExtra("playerName", playerName);
 
         startActivity(intent);
+    }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if (keyCode == KeyEvent.KEYCODE_BACK)
+        {
+            if (!btnConnectDisconnect.getText().toString().toLowerCase().equals("connect")) {
+
+                Toast.makeText(getApplicationContext(), "You need to disconnect first", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        if (!btnConnectDisconnect.getText().toString().toLowerCase().equals("connect")) {
+
+            Toast.makeText(getApplicationContext(), "You need to disconnect first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        super.onBackPressed();
     }
 }

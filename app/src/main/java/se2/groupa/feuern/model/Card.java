@@ -30,10 +30,25 @@ public class Card implements Serializable {
     public static final int KOENIG = 11;
     public static final int ASS = 12;
 
-    public Card(int color, int number, int value, int drawable) {
+    public Card(int color, int number, int drawable) {
         this.color = color;
         this.number = number;
-        this.value = value;
+        switch(number){
+            case SIEBEN:
+                this.value = 7;
+                break;
+            case ACHT:
+                this.value = 8;
+                break;
+            case NEUN:
+                this.value = 9;
+                break;
+            case ASS:
+                this.value = 11;
+                break;
+            default:
+                this.value = 10;
+        }
         this.drawable = drawable;
         //TODO this.image = new Image(<path>);
     }

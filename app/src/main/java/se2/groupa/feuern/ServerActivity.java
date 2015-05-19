@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import se2.groupa.feuern.adapters.PlayerAdapter;
 import se2.groupa.feuern.controller.ApplicationController;
 import se2.groupa.feuern.controller.ServerController;
+import se2.groupa.feuern.model.DynamicListView;
 import se2.groupa.feuern.model.GameState;
 import se2.groupa.feuern.model.Player;
 import se2.groupa.feuern.network.threads.ClientThread;
@@ -39,7 +40,8 @@ public class ServerActivity extends Activity {
     private Switch switchStartStopServer;
     private TextView tvServerIpAddress;
     private ServerController serverController;
-    private ListView listViewPlayers;
+    //private ListView listViewPlayers;
+    private DynamicListView listViewPlayers;
     private ArrayList<Player> currentPlayers;
     private PlayerAdapter listViewPlayerAdapter;
     private Button btnStartGame;
@@ -61,7 +63,8 @@ public class ServerActivity extends Activity {
         setContentView(R.layout.activity_server);
 
         tvServerIpAddress = (TextView) findViewById(R.id.tvServerIpAddress);
-        listViewPlayers = (ListView) findViewById(R.id.listViewPlayers);
+        //listViewPlayers = (ListView) findViewById(R.id.listViewPlayers);
+        listViewPlayers = (DynamicListView) findViewById(R.id.dynListView);
         btnStartGame = (Button) findViewById(R.id.btnStartGame);
         btnStartGame.setEnabled(false);
 
@@ -70,6 +73,8 @@ public class ServerActivity extends Activity {
         currentPlayers = new ArrayList<Player>();
         listViewPlayerAdapter = new PlayerAdapter(this, currentPlayers);
         listViewPlayers.setAdapter(listViewPlayerAdapter);
+        listViewPlayers.setCheeseList(currentPlayers);
+        listViewPlayers.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();

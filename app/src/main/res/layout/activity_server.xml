@@ -62,6 +62,16 @@
         android:layout_above="@+id/btnStartGame"
         android:choiceMode="none" />
 
+    <se2.groupa.feuern.model.DynamicListView
+        android:id="@+id/dynListView"
+        android:background="#0000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView"
+        android:layout_above="@+id/btnStartGame"/>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -55,8 +55,8 @@ public class GameActivity extends Activity {
     protected Card ownCardSwitch;
     protected Card publicCardSwitch;
     protected boolean moveDone;
-    protected boolean stop;
-    protected int stopPosition;
+    //protected boolean stop;
+    //protected int stopPosition;
     protected double cardPoints;
     protected Player currentPlayer;
 
@@ -111,6 +111,7 @@ public class GameActivity extends Activity {
             img_points.setText(""+cardPoints);
         }
 
+
         if (this.gameController.getGameState().getCounter() != 0){
             btn_publicCardsRight.setImageResource(gameController.getGameState().getPublicCards()[0].getDrawable());
             btn_publicCardsMiddle.setImageResource(gameController.getGameState().getPublicCards()[1].getDrawable());
@@ -154,9 +155,13 @@ public class GameActivity extends Activity {
         btn_ownCardsLeft.setClickable(false);
         btn_ownCardsRight.setClickable(false);
         btn_ownCardsMiddle.setClickable(false);
+        btn_publicCardsLeft.setClickable(false);
+        btn_publicCardsMiddle.setClickable(false);
+        btn_publicCardsRight.setClickable(false);
 
         gameController.dealingOutCards();
         returnGameStateToServer();
+
 
         if(this.gameController.getGameState().getNowTurnPlayer().getName().equals(this.currentPlayer.getName())){
             btn_ownCardsRight.setImageResource(gameController.getGameState().getNowTurnPlayer().getCards()[0].getDrawable());
@@ -252,8 +257,11 @@ public class GameActivity extends Activity {
         Button btn_next = (Button) findViewById(R.id.buttonNext);
         RelativeLayout textView_GameActivity = (RelativeLayout) findViewById(R.id.textView_GameActivity);
 
-        if(stop==true && gameController.getGameState().getPlayers().
-                indexOf(gameController.getGameState().getNextTurnPlayer()) == stopPosition){
+
+        if(     //stop==true && gameController.getGameState().getPlayers().
+                //indexOf(gameController.getGameState().getNextTurnPlayer()) == stopPosition &&
+                gameController.getGameState().getStopPlayer() != null &&
+                gameController.getGameState().getStopPlayer().getName().equals(gameController.getGameState().getNextTurnPlayer())){
 
             for(Player p:gameController.getGameState().getPlayers() ){
                 if(p.getCardPoints() > points) {
@@ -355,8 +363,9 @@ public class GameActivity extends Activity {
             public boolean onLongClick(View v) {
                 if(!moveDone && gameController.getGameState().getCounter() >=
                         gameController.getGameState().getPlayers().size()) {
-                    stop = true;
-                    stopPosition = gameController.stop();
+                    //stop = true;
+                    gameController.getGameState().setStopPlayer(currentPlayer);
+                    //stopPosition = gameController.stop();
                     btn_next.setText("Stop gedrückt!");
                 }
                 return true;

@@ -19,6 +19,8 @@ public class GameState implements Serializable {
     private int counter;
     private Player nowTurnPlayer;
     private Player nextTurnPlayer;
+    private Player stopPlayer;
+
 
     public GameState(ArrayList<Player> players){
 
@@ -27,11 +29,18 @@ public class GameState implements Serializable {
         this.counter = 0;
         this.nowTurnPlayer = players.get(0);
         this.nextTurnPlayer = players.get(1);
-
+        this.stopPlayer = null;
         //Dies stellt den Anfangszustand des Spiels dar:
         //Die Spieler sind alle Spieler die am Anfang beigetreten sind, der counter ist auf 0
         //und ein CardDeck.Objekt wird initialisiert.
+    }
 
+    public Player getStopPlayer() {
+        return stopPlayer;
+    }
+
+    public void setStopPlayer(Player stopPlayer) {
+        this.stopPlayer = stopPlayer;
     }
 
     public Player getNowTurnPlayer(){

@@ -128,7 +128,7 @@ public class ClientThread implements Runnable, Serializable {
 
                             }
                         } catch (Exception e){
-                            e.printStackTrace();
+
 
                             Message msg = clientUiHandler.obtainMessage();
                             msg.what = Operations.MakeToast.getValue();

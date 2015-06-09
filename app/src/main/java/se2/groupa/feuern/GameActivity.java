@@ -2,9 +2,14 @@ package se2.groupa.feuern;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.FloatMath;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,33 +42,45 @@ import se2.groupa.feuern.network.threads.ListenerThread;
  * Also provides to look in the cards of another user :)
  */
 
-public class GameActivity extends Activity {
+public class GameActivity extends Activity implements SensorEventListener  {
 
-    protected TextView img_nowTurnPlayer;
-    protected TextView img_nextTurnPlayer;
-    protected TextView img_points;
-    protected ImageButton btn_publicCardsRight;
-    protected ImageButton btn_publicCardsMiddle;
-    protected ImageButton btn_publicCardsLeft;
-    protected ImageButton btn_ownCardsRight;
-    protected ImageButton btn_ownCardsMiddle;
-    protected ImageButton btn_ownCardsLeft;
-    protected Button btn_next;
-    protected Button btn_KeepCardsYes;
-    protected Button btn_KeepCardsNo;
-    protected GameController gameController;
-    protected Card ownCardSwitch;
-    protected Card publicCardSwitch;
-    protected boolean moveDone;
-    protected boolean stop;
-    protected int stopPosition;
-    protected double cardPoints;
-    protected Player currentPlayer;
+    private TextView img_nowTurnPlayer;
+    private TextView img_nextTurnPlayer;
+    private TextView img_points;
+    private TextView swapCards;
+    private TextView textView_publicCards;
+    private TextView textView_nowPlayerLabel;
+    private TextView textView_nextPlayerLabel;
+    private ImageButton btn_publicCardsRight;
+    private ImageButton btn_publicCardsMiddle;
+    private ImageButton btn_publicCardsLeft;
+    private ImageButton btn_ownCardsRight;
+    private ImageButton btn_ownCardsMiddle;
+    private ImageButton btn_ownCardsLeft;
+    private Button btn_next;
+    private Button btn_KeepCardsYes;
+    private Button btn_KeepCardsNo;
+    private GameController gameController;
+    private Card ownCardSwitch;
+    private Card publicCardSwitch;
+    private boolean moveDone;
+    private boolean stop;
+    private int stopPosition;
+    private double cardPoints;
+    private Player currentPlayer;
 
     protected ListenerThread listenerThread;
     protected ClientThread clientThread;
     protected Handler uiHandler;
 
+    private SensorManager sensorMan;
+    private Sensor accelerometer;
+
+    private static boolean flag = true;
+    private float[] mGravity;
+    private float mAccel;
+    private float mAccelCurrent;
+    private float mAccelLast;
 
     public Card getOwnCardSwitch(){
         return this.ownCardSwitch;
@@ -133,22 +150,22 @@ public class GameActivity extends Activity {
 
     public void firstDeal(){
 
-        TextView img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
-        TextView img_nextTurnPlayer = (TextView) findViewById(R.id.TextViewNextTurnPlayer);
-        TextView textView_publicCards = (TextView) findViewById(R.id.textViewPublicCards);
-        TextView textView_nowPlayerLabel = (TextView) findViewById(R.id.textViewCaptionNowTurnPlayer);
-        TextView textView_nextPlayerLabel = (TextView) findViewById(R.id.textViewCaptionNextTurnPlayer);
-        TextView img_points = (TextView) findViewById(R.id.textView_points);
-        ImageButton btn_publicCardsRight = (ImageButton) findViewById(R.id.publicCardsRight);
-        ImageButton btn_publicCardsMiddle = (ImageButton) findViewById(R.id.publicCardsMiddle);
-        ImageButton btn_publicCardsLeft = (ImageButton) findViewById(R.id.publicCardsLeft);
-        ImageButton btn_ownCardsRight = (ImageButton) findViewById(R.id.ownCardsRight);
-        ImageButton btn_ownCardsMiddle = (ImageButton) findViewById(R.id.ownCardsMiddle);
-        ImageButton btn_ownCardsLeft = (ImageButton) findViewById(R.id.ownCardsLeft);
-        Button btn_next = (Button) findViewById(R.id.buttonNext);
-        Button btn_KeepCardsYes = (Button) findViewById(R.id.buttonKeepCardsYes);
-        Button btn_KeepCardsNo = (Button) findViewById(R.id.buttonKeepCardsNo);
-        TextView swapCards = (TextView) findViewById(R.id.textView_wantToKeepCards);
+         img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
+         img_nextTurnPlayer = (TextView) findViewById(R.id.TextViewNextTurnPlayer);
+         textView_publicCards = (TextView) findViewById(R.id.textViewPublicCards);
+         textView_nowPlayerLabel = (TextView) findViewById(R.id.textViewCaptionNowTurnPlayer);
+         textView_nextPlayerLabel = (TextView) findViewById(R.id.textViewCaptionNextTurnPlayer);
+         img_points = (TextView) findViewById(R.id.textView_points);
+         btn_publicCardsRight = (ImageButton) findViewById(R.id.publicCardsRight);
+         btn_publicCardsMiddle = (ImageButton) findViewById(R.id.publicCardsMiddle);
+         btn_publicCardsLeft = (ImageButton) findViewById(R.id.publicCardsLeft);
+         btn_ownCardsRight = (ImageButton) findViewById(R.id.ownCardsRight);
+         btn_ownCardsMiddle = (ImageButton) findViewById(R.id.ownCardsMiddle);
+         btn_ownCardsLeft = (ImageButton) findViewById(R.id.ownCardsLeft);
+         btn_next = (Button) findViewById(R.id.buttonNext);
+         btn_KeepCardsYes = (Button) findViewById(R.id.buttonKeepCardsYes);
+         btn_KeepCardsNo = (Button) findViewById(R.id.buttonKeepCardsNo);
+         swapCards = (TextView) findViewById(R.id.textView_wantToKeepCards);
 
         btn_publicCardsLeft.setVisibility(View.INVISIBLE);
         btn_publicCardsMiddle.setVisibility(View.INVISIBLE);
@@ -253,16 +270,16 @@ public class GameActivity extends Activity {
         int playerIndex = 0;
         double points = 0;
 
-        TextView img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
-        TextView img_nextTurnPlayer = (TextView) findViewById(R.id.TextViewNextTurnPlayer);
-        TextView img_points = (TextView) findViewById(R.id.textView_points);
-        ImageButton btn_publicCardsRight = (ImageButton) findViewById(R.id.publicCardsRight);
-        ImageButton btn_publicCardsMiddle = (ImageButton) findViewById(R.id.publicCardsMiddle);
-        ImageButton btn_publicCardsLeft = (ImageButton) findViewById(R.id.publicCardsLeft);
-        ImageButton btn_ownCardsRight = (ImageButton) findViewById(R.id.ownCardsRight);
-        ImageButton btn_ownCardsMiddle = (ImageButton) findViewById(R.id.ownCardsMiddle);
-        ImageButton btn_ownCardsLeft = (ImageButton) findViewById(R.id.ownCardsLeft);
-        Button btn_next = (Button) findViewById(R.id.buttonNext);
+         img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
+         img_nextTurnPlayer = (TextView) findViewById(R.id.TextViewNextTurnPlayer);
+         img_points = (TextView) findViewById(R.id.textView_points);
+         btn_publicCardsRight = (ImageButton) findViewById(R.id.publicCardsRight);
+         btn_publicCardsMiddle = (ImageButton) findViewById(R.id.publicCardsMiddle);
+         btn_publicCardsLeft = (ImageButton) findViewById(R.id.publicCardsLeft);
+         btn_ownCardsRight = (ImageButton) findViewById(R.id.ownCardsRight);
+         btn_ownCardsMiddle = (ImageButton) findViewById(R.id.ownCardsMiddle);
+         btn_ownCardsLeft = (ImageButton) findViewById(R.id.ownCardsLeft);
+         btn_next = (Button) findViewById(R.id.buttonNext);
         RelativeLayout textView_GameActivity = (RelativeLayout) findViewById(R.id.textView_GameActivity);
 
 
@@ -315,7 +332,10 @@ public class GameActivity extends Activity {
 
     }
 
-
+    protected void onResume() {
+        super.onResume();
+        sensorMan.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -346,7 +366,11 @@ public class GameActivity extends Activity {
         listenerThread = ApplicationController.getListenerThread();
         clientThread = ApplicationController.getClientThread();
 
-
+        sensorMan = (SensorManager)getSystemService(SENSOR_SERVICE);
+        accelerometer = sensorMan.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mAccel = 0.00f;
+        mAccelCurrent = SensorManager.GRAVITY_EARTH;
+        mAccelLast = SensorManager.GRAVITY_EARTH;
 
         initializeUiHandler();
 
@@ -357,7 +381,7 @@ public class GameActivity extends Activity {
         btn_publicCardsRight.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if(!moveDone && allOrNothing()) {
+                if (!moveDone && allOrNothing()) {
                     gameController.swapAllCards();
                     updateButtons();
                     moveDone = true;
@@ -368,9 +392,10 @@ public class GameActivity extends Activity {
 
         btn_publicCardsLeft.setOnLongClickListener(new View.OnLongClickListener() {
             Button btn_next = (Button) findViewById(R.id.buttonNext);
+
             @Override
             public boolean onLongClick(View v) {
-                if(!moveDone && gameController.getGameState().getCounter() >=
+                if (!moveDone && gameController.getGameState().getCounter() >=
                         gameController.getGameState().getPlayers().size()) {
                     stop = true;
                     //gameController.getGameState().setStopPlayer(currentPlayer);
@@ -389,22 +414,22 @@ public class GameActivity extends Activity {
 
     public void KeepCardsYes(View v){
 
-        TextView swapCards = (TextView) findViewById(R.id.textView_wantToKeepCards);
-        TextView img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
-        TextView img_nextTurnPlayer = (TextView) findViewById(R.id.TextViewNextTurnPlayer);
-        TextView textView_publicCards = (TextView) findViewById(R.id.textViewPublicCards);
-        TextView textView_nowPlayerLabel = (TextView) findViewById(R.id.textViewCaptionNowTurnPlayer);
-        TextView textView_nextPlayerLabel = (TextView) findViewById(R.id.textViewCaptionNextTurnPlayer);
-        TextView img_points = (TextView) findViewById(R.id.textView_points);
-        ImageButton btn_publicCardsRight = (ImageButton) findViewById(R.id.publicCardsRight);
-        ImageButton btn_publicCardsMiddle = (ImageButton) findViewById(R.id.publicCardsMiddle);
-        ImageButton btn_publicCardsLeft = (ImageButton) findViewById(R.id.publicCardsLeft);
-        ImageButton btn_ownCardsRight = (ImageButton) findViewById(R.id.ownCardsRight);
-        ImageButton btn_ownCardsMiddle = (ImageButton) findViewById(R.id.ownCardsMiddle);
-        ImageButton btn_ownCardsLeft = (ImageButton) findViewById(R.id.ownCardsLeft);
-        Button btn_next = (Button) findViewById(R.id.buttonNext);
-        Button btn_KeepCardsYes = (Button) findViewById(R.id.buttonKeepCardsYes);
-        Button btn_KeepCardsNo = (Button) findViewById(R.id.buttonKeepCardsNo);
+         swapCards = (TextView) findViewById(R.id.textView_wantToKeepCards);
+         img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
+         img_nextTurnPlayer = (TextView) findViewById(R.id.TextViewNextTurnPlayer);
+         textView_publicCards = (TextView) findViewById(R.id.textViewPublicCards);
+         textView_nowPlayerLabel = (TextView) findViewById(R.id.textViewCaptionNowTurnPlayer);
+         textView_nextPlayerLabel = (TextView) findViewById(R.id.textViewCaptionNextTurnPlayer);
+         img_points = (TextView) findViewById(R.id.textView_points);
+         btn_publicCardsRight = (ImageButton) findViewById(R.id.publicCardsRight);
+         btn_publicCardsMiddle = (ImageButton) findViewById(R.id.publicCardsMiddle);
+         btn_publicCardsLeft = (ImageButton) findViewById(R.id.publicCardsLeft);
+         btn_ownCardsRight = (ImageButton) findViewById(R.id.ownCardsRight);
+         btn_ownCardsMiddle = (ImageButton) findViewById(R.id.ownCardsMiddle);
+         btn_ownCardsLeft = (ImageButton) findViewById(R.id.ownCardsLeft);
+         btn_next = (Button) findViewById(R.id.buttonNext);
+         btn_KeepCardsYes = (Button) findViewById(R.id.buttonKeepCardsYes);
+         btn_KeepCardsNo = (Button) findViewById(R.id.buttonKeepCardsNo);
 
         swapCards.setVisibility(View.INVISIBLE);
         btn_KeepCardsYes.setVisibility(View.INVISIBLE);
@@ -429,22 +454,22 @@ public class GameActivity extends Activity {
 
     public void KeepCardsNo(View v){
 
-        TextView swapCards = (TextView) findViewById(R.id.textView_wantToKeepCards);
-        TextView img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
-        TextView img_nextTurnPlayer = (TextView) findViewById(R.id.TextViewNextTurnPlayer);
-        TextView textView_publicCards = (TextView) findViewById(R.id.textViewPublicCards);
-        TextView textView_nowPlayerLabel = (TextView) findViewById(R.id.textViewCaptionNowTurnPlayer);
-        TextView textView_nextPlayerLabel = (TextView) findViewById(R.id.textViewCaptionNextTurnPlayer);
-        TextView img_points = (TextView) findViewById(R.id.textView_points);
-        ImageButton btn_publicCardsRight = (ImageButton) findViewById(R.id.publicCardsRight);
-        ImageButton btn_publicCardsMiddle = (ImageButton) findViewById(R.id.publicCardsMiddle);
-        ImageButton btn_publicCardsLeft = (ImageButton) findViewById(R.id.publicCardsLeft);
-        ImageButton btn_ownCardsRight = (ImageButton) findViewById(R.id.ownCardsRight);
-        ImageButton btn_ownCardsMiddle = (ImageButton) findViewById(R.id.ownCardsMiddle);
-        ImageButton btn_ownCardsLeft = (ImageButton) findViewById(R.id.ownCardsLeft);
-        Button btn_next = (Button) findViewById(R.id.buttonNext);
-        Button btn_KeepCardsYes = (Button) findViewById(R.id.buttonKeepCardsYes);
-        Button btn_KeepCardsNo = (Button) findViewById(R.id.buttonKeepCardsNo);
+         swapCards = (TextView) findViewById(R.id.textView_wantToKeepCards);
+         img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
+         img_nextTurnPlayer = (TextView) findViewById(R.id.TextViewNextTurnPlayer);
+         textView_publicCards = (TextView) findViewById(R.id.textViewPublicCards);
+         textView_nowPlayerLabel = (TextView) findViewById(R.id.textViewCaptionNowTurnPlayer);
+         textView_nextPlayerLabel = (TextView) findViewById(R.id.textViewCaptionNextTurnPlayer);
+         img_points = (TextView) findViewById(R.id.textView_points);
+         btn_publicCardsRight = (ImageButton) findViewById(R.id.publicCardsRight);
+         btn_publicCardsMiddle = (ImageButton) findViewById(R.id.publicCardsMiddle);
+         btn_publicCardsLeft = (ImageButton) findViewById(R.id.publicCardsLeft);
+         btn_ownCardsRight = (ImageButton) findViewById(R.id.ownCardsRight);
+         btn_ownCardsMiddle = (ImageButton) findViewById(R.id.ownCardsMiddle);
+         btn_ownCardsLeft = (ImageButton) findViewById(R.id.ownCardsLeft);
+         btn_next = (Button) findViewById(R.id.buttonNext);
+         btn_KeepCardsYes = (Button) findViewById(R.id.buttonKeepCardsYes);
+         btn_KeepCardsNo = (Button) findViewById(R.id.buttonKeepCardsNo);
 
         swapCards.setVisibility(View.INVISIBLE);
         btn_KeepCardsYes.setVisibility(View.INVISIBLE);
@@ -470,6 +495,12 @@ public class GameActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        sensorMan = (SensorManager)getSystemService(SENSOR_SERVICE);
+        accelerometer = sensorMan.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mAccel = 0.00f;
+        mAccelCurrent = SensorManager.GRAVITY_EARTH;
+        mAccelLast = SensorManager.GRAVITY_EARTH;
+
         getMenuInflater().inflate(R.menu.menu_game, menu);
         return true;
     }
@@ -509,6 +540,44 @@ public class GameActivity extends Activity {
         };
 
         clientThread.updateUIHandler(uiHandler);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (!moveDone && gameController.getGameState().getCounter() >=
+                gameController.getGameState().getPlayers().size()) {
+            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+                mGravity = event.values.clone();
+                // Shake detection
+                float x = mGravity[0];
+                float y = mGravity[1];
+                float z = mGravity[2];
+                mAccelLast = mAccelCurrent;
+                mAccelCurrent = FloatMath.sqrt(x * x + y * y + z * z);
+                float delta = mAccelCurrent - mAccelLast;
+                mAccel = mAccel * 0.9f + delta;
+                // Make this higher or lower according to how much
+                // motion you want to detect
+
+                if (mAccel > 8 && flag) {
+                    flag = false; // dont go in again
+                        stop = true;
+                        //gameController.getGameState().setStopPlayer(currentPlayer);
+                        stopPosition = gameController.getGameState().getCounter() + gameController.getGameState().getPlayers().size();
+                        gameController.getGameState().setStopPosition(stopPosition);
+                        //stopPosition = gameController.stop();
+                        gameController.getGameState().setStop(true);
+                        btn_next.setText("Stop durch Geste!");
+                        Toast.makeText(getApplicationContext(), "Stop durch Geste!", Toast.LENGTH_SHORT).show();
+
+                        this.next(null);
+                        }
+                    }
+                }
+    }
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 
     private void updateGameState(GameState gameState)

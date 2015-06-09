@@ -1,11 +1,13 @@
 package se2.groupa.feuern;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -65,8 +67,12 @@ public class ResultActivity extends Activity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_about) {
+            Dialog dialog = new Dialog(this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);//NO TITLE :)
+            dialog.setContentView(R.layout.about_dialog);
+            dialog.setCancelable(true);
+            dialog.show();
         }
 
         return super.onOptionsItemSelected(item);

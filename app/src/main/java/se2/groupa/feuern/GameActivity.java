@@ -55,8 +55,8 @@ public class GameActivity extends Activity {
     protected Card ownCardSwitch;
     protected Card publicCardSwitch;
     protected boolean moveDone;
-    //protected boolean stop;
-    //protected int stopPosition;
+    protected boolean stop;
+    protected int stopPosition;
     protected double cardPoints;
     protected Player currentPlayer;
 
@@ -88,6 +88,8 @@ public class GameActivity extends Activity {
 
     public void updateButtons(){
 
+
+
         cardPoints = gameController.getGameState().getNowTurnPlayer().getCardPoints();
 
         TextView img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
@@ -100,6 +102,12 @@ public class GameActivity extends Activity {
         ImageButton btn_ownCardsLeft = (ImageButton) findViewById(R.id.ownCardsLeft);
         Button btn_next = (Button) findViewById(R.id.buttonNext);
         TextView img_points = (TextView) findViewById(R.id.textView_points);
+
+        if(gameController.getGameState().isStop() && gameController.getGameState().getStopPosition() == gameController.getGameState().getCounter()){
+            btn_next.setText("Spielende");
+            returnGameStateToServer();
+        }
+
 
         img_nowTurnPlayer.setText(gameController.getGameState().getNowTurnPlayer().getName());
         img_nextTurnPlayer.setText(gameController.getGameState().getNextTurnPlayer().getName());
@@ -258,10 +266,11 @@ public class GameActivity extends Activity {
         RelativeLayout textView_GameActivity = (RelativeLayout) findViewById(R.id.textView_GameActivity);
 
 
-        if(     //stop==true && gameController.getGameState().getPlayers().
-                //indexOf(gameController.getGameState().getNextTurnPlayer()) == stopPosition &&
-                gameController.getGameState().getStopPlayer() != null &&
-                gameController.getGameState().getStopPlayer().getName().equals(gameController.getGameState().getNextTurnPlayer())){
+        if(     stop==true && gameController.getGameState().getPlayers().
+                indexOf(gameController.getGameState().getNextTurnPlayer()) == stopPosition
+                //gameController.getGameState().getStopPlayer() != null &&
+                //gameController.getGameState().getStopPlayer().getName().equals(gameController.getGameState().getNextTurnPlayer())
+                ){
 
             for(Player p:gameController.getGameState().getPlayers() ){
                 if(p.getCardPoints() > points) {
@@ -363,10 +372,14 @@ public class GameActivity extends Activity {
             public boolean onLongClick(View v) {
                 if(!moveDone && gameController.getGameState().getCounter() >=
                         gameController.getGameState().getPlayers().size()) {
-                    //stop = true;
-                    gameController.getGameState().setStopPlayer(currentPlayer);
+                    stop = true;
+                    //gameController.getGameState().setStopPlayer(currentPlayer);
+                    stopPosition = gameController.getGameState().getCounter() + gameController.getGameState().getPlayers().size();
+                    gameController.getGameState().setStopPosition(stopPosition);
                     //stopPosition = gameController.stop();
+                    gameController.getGameState().setStop(true);
                     btn_next.setText("Stop gedrückt!");
+                    returnGameStateToServer();
                 }
                 return true;
             }
@@ -519,6 +532,7 @@ public class GameActivity extends Activity {
         Button btn_next = (Button) findViewById(R.id.buttonNext);
         TextView img_points = (TextView) findViewById(R.id.textView_points);
 
+        //current player
         if(this.gameController.getGameState().getNowTurnPlayer().getName().equals(this.currentPlayer.getName())){
             btn_ownCardsRight.setVisibility(View.VISIBLE);
             btn_ownCardsMiddle.setVisibility(View.VISIBLE);
@@ -542,6 +556,7 @@ public class GameActivity extends Activity {
             btn_ownCardsLeft.setClickable(true);
             btn_next.setClickable(true);
         }
+        //another player
         else{
             btn_ownCardsRight.setVisibility(View.VISIBLE);
             btn_ownCardsMiddle.setVisibility(View.VISIBLE);
@@ -563,6 +578,9 @@ public class GameActivity extends Activity {
             btn_ownCardsMiddle.setClickable(false);
             btn_ownCardsLeft.setClickable(false);
             btn_next.setClickable(false);
+            if(gameState.isStop()){
+                btn_next.setText("Stop gedrückt!");
+            }
 
         }
         updateButtons();

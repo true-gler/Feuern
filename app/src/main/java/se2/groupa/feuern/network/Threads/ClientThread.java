@@ -90,8 +90,14 @@ public class ClientThread implements Runnable, Serializable {
                     while (isRunning)
                     {
                         try {
-                            read = (NetworkMessage) input.readObject();
-
+                            Object testread = input.readObject();
+                            if(testread instanceof NetworkMessage){
+                                read = (NetworkMessage) testread;
+                            }else{
+                                read = null;
+                            }
+                            //NetworkMessage read = (NetworkMessage) input.readObject();
+                            int dasisteinTest = 0;
                             if (read == null) // server is unavailable
                             {
                                 isRunning = false;

@@ -7,5 +7,8 @@ import android.test.InstrumentationTestCase;
  */
 public class TestClass extends InstrumentationTestCase {
 
+    public void testPattern() throws Exception{
+        assertEquals(true, true);
+    }
 
 }

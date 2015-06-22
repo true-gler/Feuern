@@ -296,8 +296,8 @@ public class GameActivity extends Activity implements SensorEventListener  {
                 }
             }
 
-            img_points.setText(gameController.getGameState().getPlayers().get(playerIndex).getName()
-                                + " hat gewonnen!");
+            //img_points.setText(gameController.getGameState().getPlayers().get(playerIndex).getName()
+            //                    + " hat gewonnen!");
             btn_next.setText("Spielende!");
             btn_publicCardsRight.setClickable(false);
             btn_publicCardsMiddle.setClickable(false);

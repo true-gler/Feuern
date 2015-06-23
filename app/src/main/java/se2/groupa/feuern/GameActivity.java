@@ -103,7 +103,7 @@ public class GameActivity extends Activity implements SensorEventListener  {
     }
 
 
-    public void updateButtons(){
+    public void updateButtons() throws InterruptedException {
 
 
 
@@ -137,9 +137,12 @@ public class GameActivity extends Activity implements SensorEventListener  {
                     + " hat gewonnen!");
             returnGameStateToServer();
 
-            //Thread.Sleep(1000);
-            Intent intent = new Intent(this, ResultActivity.class );
-            startActivity(intent);
+
+            if(gameController.getGameState().getNowTurnPlayer() == this.currentPlayer)
+            {
+                Intent intent = new Intent(this, ResultActivity.class);
+                startActivity(intent);
+            }
         }
 
 

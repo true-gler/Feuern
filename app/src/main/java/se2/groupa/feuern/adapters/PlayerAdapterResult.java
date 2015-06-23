@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import se2.groupa.feuern.R;
 import se2.groupa.feuern.model.Player;
 
-public class PlayerAdapter extends ArrayAdapter<Player> {
-    public PlayerAdapter(Context context, ArrayList<Player> players) {
+public class PlayerAdapterResult extends ArrayAdapter<Player> {
+    public PlayerAdapterResult(Context context, ArrayList<Player> players) {
         super(context, 0, players);
     }
 
@@ -28,7 +28,7 @@ public class PlayerAdapter extends ArrayAdapter<Player> {
         // Lookup view for data population
         TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
         // Populate the data into the template view using the data object
-        tvName.setText(player.getName());
+        tvName.setText(player.getCardPoints() + " " + player.getName());
         // Return the completed view to render on screen
         return convertView;
     }

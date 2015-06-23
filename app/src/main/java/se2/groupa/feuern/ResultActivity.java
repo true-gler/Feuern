@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import se2.groupa.feuern.adapters.PlayerAdapter;
+import se2.groupa.feuern.adapters.PlayerAdapterResult;
 import se2.groupa.feuern.controller.GameController;
 import se2.groupa.feuern.model.Player;
 
@@ -26,7 +27,7 @@ public class ResultActivity extends Activity {
     private GameController gameController = FeuernHelper.gameController;
     private ArrayList<Player> playerList;
     private ListView listView;
-    private PlayerAdapter playerAdapter;
+    private PlayerAdapterResult playerAdapter;
 
 
     @Override
@@ -36,7 +37,7 @@ public class ResultActivity extends Activity {
 
         listView = (ListView) findViewById(R.id.listView);
         playerList = new ArrayList<Player>();
-        playerAdapter = new PlayerAdapter(this, playerList);
+        playerAdapter = new PlayerAdapterResult(this, playerList);
         listView.setAdapter(playerAdapter);
         //playerAdapter.add(new Player("Michael"));
         //playerAdapter.addAll(gameController.getGameState().getPlayers());

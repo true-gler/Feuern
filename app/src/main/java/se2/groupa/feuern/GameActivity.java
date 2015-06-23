@@ -103,7 +103,7 @@ public class GameActivity extends Activity implements SensorEventListener  {
     }
 
 
-    public void updateButtons() throws InterruptedException {
+    public void updateButtons() {
 
 
 

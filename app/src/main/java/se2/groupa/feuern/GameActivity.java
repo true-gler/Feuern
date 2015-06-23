@@ -355,6 +355,10 @@ public class GameActivity extends Activity implements SensorEventListener  {
         sensorMan.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
+    protected void onDestroy(Bundle savedInstanceState) {
+        clientThread.shutdown();
+        listenerThread.shutdown();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -587,8 +591,27 @@ public class GameActivity extends Activity implements SensorEventListener  {
                         gameController.getGameState().setStop(true);
                         btn_next.setText("Stop durch Geste!");
                         Toast.makeText(getApplicationContext(), "Stop durch Geste!", Toast.LENGTH_SHORT).show();
+                        int playerIndex = 0;
+                        double points = 0;
+                        for(Player p:gameController.getGameState().getPlayers() ){
+                            if(p.getCardPoints() > points) {
+                                points = p.getCardPoints();
+                                playerIndex = gameController.getGameState().getPlayers().indexOf(p);
+                            }
+                        }
 
-                        this.next(null);
+                        img_points.setText(gameController.getGameState().getPlayers().get(playerIndex).getName()
+                                + " hat gewonnen!");
+                        btn_next.setText("Spielende!");
+                        btn_publicCardsRight.setClickable(false);
+                        btn_publicCardsMiddle.setClickable(false);
+                        btn_publicCardsLeft.setClickable(false);
+                        btn_ownCardsRight.setClickable(false);
+                        btn_ownCardsMiddle.setClickable(false);
+                        btn_ownCardsLeft.setClickable(false);
+                        btn_next.setClickable(false);
+                        //textView_GameActivity.setClickable(true);
+                        returnGameStateToServer();
                     }
                 }
             }

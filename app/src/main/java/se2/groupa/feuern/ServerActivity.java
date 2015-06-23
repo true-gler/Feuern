@@ -106,8 +106,8 @@ public class ServerActivity extends Activity {
                     ShowGameActivity();
                 }
                 else if (msg.what == Operations.MakeToast.getValue()) {
-                    if ((String)msg.obj != null)
-                        Toast.makeText(getApplicationContext(), (String)msg.obj, Toast.LENGTH_SHORT).show();
+                   // if ((String)msg.obj != null)
+                     //   Toast.makeText(getApplicationContext(), (String)msg.obj, Toast.LENGTH_SHORT).show();
                 }
                 else if (msg.what == Operations.StopServer.getValue()) {
                     stopServer();

@@ -562,7 +562,7 @@ public class GameActivity extends Activity implements SensorEventListener  {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if(btn_next.isClickable()) {
+        if(gameController.getGameState().getNowTurnPlayer() == currentPlayer) {
             if (!moveDone && gameController.getGameState().getCounter() >=
                     gameController.getGameState().getPlayers().size()) {
                 if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {

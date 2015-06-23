@@ -109,19 +109,32 @@ public class GameActivity extends Activity implements SensorEventListener  {
 
         cardPoints = gameController.getGameState().getNowTurnPlayer().getCardPoints();
 
-        TextView img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
-        TextView img_nextTurnPlayer = (TextView) findViewById(R.id.TextViewNextTurnPlayer);
-        ImageButton btn_publicCardsRight = (ImageButton) findViewById(R.id.publicCardsRight);
-        ImageButton btn_publicCardsMiddle = (ImageButton) findViewById(R.id.publicCardsMiddle);
-        ImageButton btn_publicCardsLeft = (ImageButton) findViewById(R.id.publicCardsLeft);
-        ImageButton btn_ownCardsRight = (ImageButton) findViewById(R.id.ownCardsRight);
-        ImageButton btn_ownCardsMiddle = (ImageButton) findViewById(R.id.ownCardsMiddle);
-        ImageButton btn_ownCardsLeft = (ImageButton) findViewById(R.id.ownCardsLeft);
-        Button btn_next = (Button) findViewById(R.id.buttonNext);
-        TextView img_points = (TextView) findViewById(R.id.textView_points);
+         img_nowTurnPlayer =  (TextView) findViewById(R.id.TextViewNowTurnPlayer);
+         img_nextTurnPlayer = (TextView) findViewById(R.id.TextViewNextTurnPlayer);
+         btn_publicCardsRight = (ImageButton) findViewById(R.id.publicCardsRight);
+        btn_publicCardsMiddle = (ImageButton) findViewById(R.id.publicCardsMiddle);
+         btn_publicCardsLeft = (ImageButton) findViewById(R.id.publicCardsLeft);
+         btn_ownCardsRight = (ImageButton) findViewById(R.id.ownCardsRight);
+         btn_ownCardsMiddle = (ImageButton) findViewById(R.id.ownCardsMiddle);
+         btn_ownCardsLeft = (ImageButton) findViewById(R.id.ownCardsLeft);
+         btn_next = (Button) findViewById(R.id.buttonNext);
+         img_points = (TextView) findViewById(R.id.textView_points);
 
         if(gameController.getGameState().isStop() && gameController.getGameState().getStopPosition() == gameController.getGameState().getCounter()){
             btn_next.setText("Spielende");
+
+            int playerIndex = 0;
+            double points = 0;
+
+            for(Player p:gameController.getGameState().getPlayers() ){
+                if(p.getCardPoints() > points) {
+                    points = p.getCardPoints();
+                    playerIndex = gameController.getGameState().getPlayers().indexOf(p);
+                }
+            }
+
+            img_points.setText(gameController.getGameState().getPlayers().get(playerIndex).getName()
+                    + " hat gewonnen!");
             returnGameStateToServer();
         }
 
@@ -296,8 +309,8 @@ public class GameActivity extends Activity implements SensorEventListener  {
                 }
             }
 
-            //img_points.setText(gameController.getGameState().getPlayers().get(playerIndex).getName()
-            //                    + " hat gewonnen!");
+            img_points.setText(gameController.getGameState().getPlayers().get(playerIndex).getName()
+                                + " hat gewonnen!");
             btn_next.setText("Spielende!");
             btn_publicCardsRight.setClickable(false);
             btn_publicCardsMiddle.setClickable(false);
@@ -306,7 +319,7 @@ public class GameActivity extends Activity implements SensorEventListener  {
             btn_ownCardsMiddle.setClickable(false);
             btn_ownCardsLeft.setClickable(false);
             btn_next.setClickable(false);
-            textView_GameActivity.setClickable(true);
+            //textView_GameActivity.setClickable(true);
             returnGameStateToServer();
 
         }
@@ -321,6 +334,7 @@ public class GameActivity extends Activity implements SensorEventListener  {
 
     public boolean allOrNothing (){
 
+//TODO: alles >=24 ist alles oder Nichts
         if((gameController.getGameState().getPublicCards()[0].getColor()==
                  gameController.getGameState().getPublicCards()[1].getColor())  &&
            (gameController.getGameState().getPublicCards()[1].getColor() ==

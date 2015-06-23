@@ -28,7 +28,7 @@ public class PlayerAdapter extends ArrayAdapter<Player> {
         // Lookup view for data population
         TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
         // Populate the data into the template view using the data object
-        tvName.setText(player.getName());
+        tvName.setText(player.getLivePoints() + " " + player.getName());
         // Return the completed view to render on screen
         return convertView;
     }

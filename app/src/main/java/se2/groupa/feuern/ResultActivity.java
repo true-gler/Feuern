@@ -28,12 +28,6 @@ public class ResultActivity extends Activity {
     private ListView listView;
     private PlayerAdapter playerAdapter;
 
-    public void fillListView(){
-        listView = (ListView) findViewById(R.id.listView);
-        playerAdapter = new PlayerAdapter(this, playerList);
-        listView.setAdapter(playerAdapter);
-        playerAdapter.add(new Player("Michael"));
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +40,7 @@ public class ResultActivity extends Activity {
         listView.setAdapter(playerAdapter);
         //playerAdapter.add(new Player("Michael"));
         //playerAdapter.addAll(gameController.getGameState().getPlayers());
+        gameController.getGameState().getPlayers();
         playerList.addAll(gameController.getGameState().getPlayers());
         Collections.sort(playerList);
 

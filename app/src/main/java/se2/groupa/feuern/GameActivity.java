@@ -136,6 +136,10 @@ public class GameActivity extends Activity implements SensorEventListener  {
             img_points.setText(gameController.getGameState().getPlayers().get(playerIndex).getName()
                     + " hat gewonnen!");
             returnGameStateToServer();
+
+            //Thread.Sleep(1000);
+            Intent intent = new Intent(this, ResultActivity.class );
+            startActivity(intent);
         }
 
 
@@ -544,10 +548,10 @@ public class GameActivity extends Activity implements SensorEventListener  {
                 if (msg.what == Operations.UpdateGameState.getValue()) {
                     updateGameState((GameState) msg.obj);
                 }
-                else if (msg.what == Operations.MakeToast.getValue()) {
+               /* else if (msg.what == Operations.MakeToast.getValue()) {
                     if ((String)msg.obj != null)
-                        Toast.makeText(getApplicationContext(), (String)msg.obj, Toast.LENGTH_SHORT).show();
-                }
+                        //Toast.makeText(getApplicationContext(), (String)msg.obj, Toast.LENGTH_SHORT).show();
+                }*/
 
                 super.handleMessage(msg);
             }

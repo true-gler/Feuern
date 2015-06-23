@@ -157,7 +157,12 @@ public class ServerThread implements Runnable {
             if (clientSocket != null)
                 clientSocket.close();
         } catch (IOException e) {
+            e.printStackTrace();
 
+            Message msg = uiHandler.obtainMessage();
+            msg.what = Operations.MakeToast.getValue();
+            msg.obj = e.getMessage();
+            uiHandler.sendMessage(msg);
         }
     }
 

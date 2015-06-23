@@ -215,8 +215,8 @@ public class ClientActivity extends Activity {
                     }
                 }
                 else if (msg.what == Operations.MakeToast.getValue()) {
-                    if ((String)msg.obj != null)
-                        Toast.makeText(getApplicationContext(), (String)msg.obj, Toast.LENGTH_SHORT).show();
+                  //  if ((String)msg.obj != null)
+                       // Toast.makeText(getApplicationContext(), (String)msg.obj, Toast.LENGTH_SHORT).show();
                 }
                 else if (msg.what == Operations.StartGame.getValue()) {
                     ShowGameActivity((GameState)msg.obj);

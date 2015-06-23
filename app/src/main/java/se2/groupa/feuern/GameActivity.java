@@ -137,12 +137,9 @@ public class GameActivity extends Activity implements SensorEventListener  {
                     + " hat gewonnen!");
             returnGameStateToServer();
 
+            Intent intent = new Intent(this, ResultActivity.class);
+            startActivity(intent);
 
-            if(gameController.getGameState().getNowTurnPlayer() == this.currentPlayer)
-            {
-                Intent intent = new Intent(this, ResultActivity.class);
-                startActivity(intent);
-            }
         }
 
 
@@ -565,23 +562,24 @@ public class GameActivity extends Activity implements SensorEventListener  {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (!moveDone && gameController.getGameState().getCounter() >=
-                gameController.getGameState().getPlayers().size()) {
-            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-                mGravity = event.values.clone();
-                // Shake detection
-                float x = mGravity[0];
-                float y = mGravity[1];
-                float z = mGravity[2];
-                mAccelLast = mAccelCurrent;
-                mAccelCurrent = FloatMath.sqrt(x * x + y * y + z * z);
-                float delta = mAccelCurrent - mAccelLast;
-                mAccel = mAccel * 0.9f + delta;
-                // Make this higher or lower according to how much
-                // motion you want to detect
+        if(btn_next.isEnabled()) {
+            if (!moveDone && gameController.getGameState().getCounter() >=
+                    gameController.getGameState().getPlayers().size()) {
+                if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+                    mGravity = event.values.clone();
+                    // Shake detection
+                    float x = mGravity[0];
+                    float y = mGravity[1];
+                    float z = mGravity[2];
+                    mAccelLast = mAccelCurrent;
+                    mAccelCurrent = FloatMath.sqrt(x * x + y * y + z * z);
+                    float delta = mAccelCurrent - mAccelLast;
+                    mAccel = mAccel * 0.9f + delta;
+                    // Make this higher or lower according to how much
+                    // motion you want to detect
 
-                if (mAccel > 8 && flag) {
-                    flag = false; // dont go in again
+                    if (mAccel > 8 && flag) {
+                        flag = false; // dont go in again
                         stop = true;
                         //gameController.getGameState().setStopPlayer(currentPlayer);
                         stopPosition = gameController.getGameState().getCounter() + gameController.getGameState().getPlayers().size();
@@ -592,9 +590,10 @@ public class GameActivity extends Activity implements SensorEventListener  {
                         Toast.makeText(getApplicationContext(), "Stop durch Geste!", Toast.LENGTH_SHORT).show();
 
                         this.next(null);
-                        }
                     }
                 }
+            }
+        }
     }
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
